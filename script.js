@@ -17,29 +17,36 @@ function monitorInput(val) {
     const raw = val.toLowerCase();
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
+    // LGBT
     if(raw.includes("lgbt")) document.getElementById('terminal-ui').classList.add('rainbow-mode');
     
+    // RADEK
     if(raw.includes("radek")) {
         document.getElementById('radek-ears-container').style.display = "block";
         setTimeout(() => { document.getElementById('radek-ears-container').style.display = "none"; }, 120000); 
     }
 
+    // FURRY / COUFAL
     if (clean.includes("furry") || clean.includes("coufal")) {
         document.getElementById('furry-label').style.display = "block";
     }
 
+    // LUBOŠEK + HUNTER
     if (clean.includes("lubosek") && clean.includes("hunter") && !videoPlayed) {
         playVideo("https://www.youtube.com/embed/l2pw-TiT4Tk?autoplay=1", 59000);
     }
 
+    // POLITICI
     if(raw.includes("macinka")) { showTopImg('macinka-img'); setTimeout(() => triggerShutdown(), 2500); }
     if(raw.includes("turek")) { showTopImg('turek-img'); setTimeout(() => triggerShutdown(), 2500); }
 
+    // BITCOIN
     if(clean.includes("med") || clean.includes("zelezo")) {
         document.getElementById('bitcoin-container').style.display = "block";
         setTimeout(() => { document.getElementById('bitcoin-container').style.display = "none"; }, 60000);
     }
 
+    // BLACKLIST
     blacklist.forEach(word => {
         if(clean.includes(word) && !raw.includes("turek") && !raw.includes("macinka")) triggerShutdown();
     });
