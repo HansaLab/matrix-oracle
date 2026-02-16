@@ -8,12 +8,12 @@ function monitorInput(val) {
     const raw = val.toLowerCase();
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-    // 1. LGBT MÓD - DUHOVÝ TEXT POŘÁD
+    // 1. LGBT MÓD - Duhové všechno a napořád
     if(raw.includes("lgbt")) {
         document.getElementById('terminal-ui').classList.add('rainbow-mode');
     }
 
-    // 2. RADEK - UŠI NA 2 MINUTY (120 000 ms)
+    // 2. RADEK - Uši na 2 minuty (120000 ms)
     if(raw.includes("radek")) {
         document.getElementById('radek-ears-container').style.display = "block";
         setTimeout(() => {
@@ -21,34 +21,30 @@ function monitorInput(val) {
         }, 120000); 
     }
 
-    // 3. FURRY BLOKACE (HONZA / JAN)
+    // 3. FURRY + HONZA/JAN BLOKACE
     if (raw.includes("furry") && (raw.includes("honza") || raw.includes("jan"))) {
         inputField.value = ""; 
         document.getElementById('status-bar').innerText = "ZAKÁZANÁ KOMBINACE!";
         return; 
     }
 
-    // 4. MACINKA (Zobrazí obrázek a pak vyhodí)
+    // 4. TUREK & MACINKA (Ukázat a pak vyhodit)
     if(raw.includes("macinka")) { 
         showTopImg('macinka-img');
-        setTimeout(() => { triggerShutdown(); }, 2000); // Vyhodí tě po 2 sekundách
+        setTimeout(() => { triggerShutdown(); }, 2500); 
     }
-
-    // 5. TUREK (Zobrazí obrázek a pak vyhodí)
     if(raw.includes("turek")) { 
         showTopImg('turek-img');
-        setTimeout(() => { triggerShutdown(); }, 2000); // Vyhodí tě po 2 sekundách
+        setTimeout(() => { triggerShutdown(); }, 2500); 
     }
 
-    // BITCOIN (Měď, Železo, Kabel)
+    // BITCOIN
     if(clean.includes("med") || clean.includes("zelezo") || clean.includes("kabel")) {
         document.getElementById('bitcoin-container').style.display = "block";
-        setTimeout(() => {
-            document.getElementById('bitcoin-container').style.display = "none";
-        }, 60000);
+        setTimeout(() => { document.getElementById('bitcoin-container').style.display = "none"; }, 60000);
     }
 
-    // SSSR + HANZ VIDEO
+    // SSSR + HANZ
     if(raw.includes("sssr") && raw.includes("hanz") && !videoPlayed) {
         videoPlayed = true;
         const overlay = document.getElementById('video-overlay');
@@ -62,10 +58,9 @@ function monitorInput(val) {
         }, 52000);
     }
 
-    // FURRY LABEL (samotné slovo furry)
     document.getElementById('furry-label').style.display = raw.includes("furry") ? "block" : "none";
 
-    // BLACKLIST CHECK (ostatní slova)
+    // BLACKLIST
     blacklist.forEach(word => {
         if(clean.includes(word) && !raw.includes("turek") && !raw.includes("macinka")) {
             triggerShutdown();
@@ -76,7 +71,6 @@ function monitorInput(val) {
 function showTopImg(id) {
     const img = document.getElementById(id);
     img.style.display = "block";
-    // Obrázek zmizí jen pokud systém ještě běží
     setTimeout(() => { if(!isDead) img.style.display = "none"; }, 4000);
 }
 
@@ -89,12 +83,11 @@ function startProcess() {
     if(isDead) return;
     const res = document.getElementById('final-result');
     const status = document.getElementById('status-bar');
-    
     res.innerText = "";
     status.innerText = "PROBÍHÁ ANALÝZA MATRIXU...";
-    
     setTimeout(() => {
         status.innerText = "STATUS: SYSTÉM STABILNÍ";
         res.innerText = Math.random() > 0.5 ? "ANO" : "NE";
     }, 1500);
 }
+
