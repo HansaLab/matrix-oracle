@@ -2,21 +2,18 @@ const blacklist = ["hitler", "motoriste", "zide", "zid", "nsdap", "pirati", "ano
 let isDead = false;
 let videoPlayed = false;
 
-// TABULKA PEVNÝCH ROZHODNUTÍ
 const specialCombos = [
-    { words: ["radek", "uši"], result: "URČITĚ ANO" },
-    { words: ["matrix", "oracle"], result: "VŽDY A VŠUDE" },
-    { words: ["pivo", "zdarma"], result: "TOTÁLNÍ NE" },
-    { words: ["koci", "idiot"], result: "JASNÝ ANO" },
-    { words: ["kocourek", "idiot"], result: "JASNÝ ANO" }
+    { words: ["radek", "uši"], result: "JASNÝ ANO" },
+    { words: ["koci", "idiot"], result: "URČITĚ ANO" },
+    { words: ["kocourek", "idiot"], result: "URČITĚ ANO" },
+    { words: ["matrix", "oracle"], result: "VŽDY" }
 ];
 
-const answersPositive = ["ANO", "URČITĚ", "JASNÁ VĚC", "ROZHODNĚ", "BEZPOCHYBY", "STOPROCENTNĚ"];
-const answersNegative = ["NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ", "BOHUŽEL NE", "VYLOUČENO", "URČITĚ NE"];
+const answersPositive = ["ANO", "URČITĚ", "JASNÁ VĚC", "ROZHODNĚ", "BEZPOCHYBY"];
+const answersNegative = ["NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ", "BOHUŽEL NE", "VYLOUČENO"];
 
 function monitorInput(val) {
     if(isDead) return;
-    const inputField = document.getElementById('user-input');
     const raw = val.toLowerCase();
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
@@ -27,28 +24,21 @@ function monitorInput(val) {
         setTimeout(() => { document.getElementById('radek-ears-container').style.display = "none"; }, 120000); 
     }
 
-    // FURRY / COUFAL LABEL - Zůstane napořád
-    if (raw.includes("furry") || raw.includes("coufal")) {
+    if (clean.includes("furry") || clean.includes("coufal")) {
         document.getElementById('furry-label').style.display = "block";
     }
 
-    // BLOKACE FURRY/COUFAL + HONZA/JAN
-    if ((raw.includes("furry") || raw.includes("coufal")) && (raw.includes("honza") || raw.includes("jan"))) {
-        inputField.value = ""; 
-        document.getElementById('status-bar').innerText = "ZAKÁZANÁ KOMBINACE!";
-        return; 
-    }
-
-    // EASTER EGGS: VIDEA (Lubošek + Hunter loví jeleny)
-    if (raw.includes("lubosek") && raw.includes("hunter") && !videoPlayed) {
+    if (clean.includes("lubosek") && clean.includes("hunter") && !videoPlayed) {
         playVideo("https://www.youtube.com/embed/l2pw-TiT4Tk?autoplay=1", 59000);
-    }
-    if(raw.includes("sssr") && raw.includes("hanz") && !videoPlayed) {
-        playVideo("https://www.youtube.com/embed/UKrA8hv8dvE?autoplay=1", 52000);
     }
 
     if(raw.includes("macinka")) { showTopImg('macinka-img'); setTimeout(() => triggerShutdown(), 2500); }
     if(raw.includes("turek")) { showTopImg('turek-img'); setTimeout(() => triggerShutdown(), 2500); }
+
+    if(clean.includes("med") || clean.includes("zelezo")) {
+        document.getElementById('bitcoin-container').style.display = "block";
+        setTimeout(() => { document.getElementById('bitcoin-container').style.display = "none"; }, 60000);
+    }
 
     blacklist.forEach(word => {
         if(clean.includes(word) && !raw.includes("turek") && !raw.includes("macinka")) triggerShutdown();
@@ -89,7 +79,7 @@ function startProcess() {
     const loader = setInterval(() => {
         status.innerText = steps[i++];
         if(i >= steps.length) { clearInterval(loader); finishProcess(input); }
-    }, 700);
+    }, 800);
 }
 
 function finishProcess(input) {
