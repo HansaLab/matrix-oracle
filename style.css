@@ -1,3 +1,4 @@
+/* ZÁKLADNÍ NASTAVENÍ STRÁNKY */
 body {
     margin: 0;
     background-color: #000;
@@ -10,6 +11,7 @@ body {
     overflow: hidden;
 }
 
+/* HLAVNÍ TERMINÁL */
 .terminal {
     width: 95%;
     max-width: 750px;
@@ -22,6 +24,7 @@ body {
     z-index: 10;
 }
 
+/*VSTUPNÍ POLE */
 input {
     width: 85%;
     background: transparent;
@@ -35,22 +38,31 @@ input {
     margin-top: 30px;
 }
 
+/* TLAČÍTKO */
 button {
     margin-top: 45px;
     background: #00ff41;
     color: #000;
     border: none;
-    padding: 20px 60px;
+    padding: 18px 55px;
     font-weight: bold;
     font-size: 1.2rem;
     cursor: pointer;
+    transition: 0.2s;
 }
 
+button:hover {
+    background: #00cc33;
+    box-shadow: 0 0 15px #00ff41;
+}
+
+/* STAVOVÝ ŘÁDEK A VÝSLEDEK */
 #status-bar {
     margin-top: 80px;
     font-size: 1.1rem;
     color: #008800;
     font-weight: bold;
+    letter-spacing: 2px;
 }
 
 #final-result {
@@ -59,39 +71,90 @@ button {
     font-weight: bold;
 }
 
-/* Pozice pro dynamické prvky */
+/* --- EASTER EGGY A SPECIÁLNÍ PRVKY --- */
+
+/* RADKOVY UŠI - OPRAVENO (BEZ !IMPORTANT) */
 #radek-ears-container {
+    display: none; 
     position: absolute;
     top: -140px;
     left: 50%;
     transform: translateX(-50%);
     width: 350px;
+    z-index: 20;
 }
 
-#bitcoin-container {
+/* COUFAL / FURRY LABEL */
+#furry-label {
     position: fixed;
-    top: 0; left: 0; width: 100%;
-    text-align: center;
+    bottom: 30px;
+    right: 30px;
+    color: #ff00ff;
+    font-weight: bold;
+    display: none;
+    font-size: 1.8rem;
+    text-shadow: 0 0 15px #ff00ff;
 }
 
-#top-image-container {
-    position: fixed;
-    top: 20px; right: 20px;
-    display: flex; flex-direction: column; gap: 15px;
-    z-index: 100;
-}
-
-#top-image-container img { max-height: 250px; border: 2px solid #00ff41; }
-#furry-label { position: fixed; bottom: 30px; right: 30px; color: #ff00ff; font-weight: bold; display: none; font-size: 2rem; }
-
-#video-overlay, #idiot-overlay {
+/* VIDEO OVERLAY (SSSR, LUBOŠEK) */
+#video-overlay {
     display: none;
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0; left: 0; 
+    width: 100%; height: 100%;
     z-index: 1000;
-    justify-content: center; align-items: center;
+    background: rgba(0, 0, 0, 0.95);
+    justify-content: center;
+    align-items: center;
 }
-#idiot-overlay { background: #000; color: #fff; font-size: 3rem; text-align: center; }
 
-.rainbow-mode { animation: rainbowBorder 2s infinite linear !important; }
-@keyframes rainbowBorder { 0% { border-color: red; } 33% { border-color: blue; } 66% { border-color: yellow; } 100% { border-color: red; } }
+/* IDIOT SHUTDOWN SCREEN */
+#idiot-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; 
+    width: 100%; height: 100%;
+    z-index: 2000;
+    background: #000;
+    color: #fff;
+    font-size: 2.5rem;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* --- LGBT RAINBOW MÓD --- */
+.rainbow-mode {
+    animation: rainbowBorder 2s infinite linear;
+}
+
+.rainbow-mode button {
+    animation: rainbowBg 2s infinite linear;
+    color: #fff;
+}
+
+.rainbow-mode #status-bar {
+    animation: rainbowText 2s infinite linear;
+}
+
+@keyframes rainbowBorder {
+    0% { border-color: red; box-shadow: 0 0 20px red; }
+    33% { border-color: blue; box-shadow: 0 0 20px blue; }
+    66% { border-color: yellow; box-shadow: 0 0 20px yellow; }
+    100% { border-color: red; box-shadow: 0 0 20px red; }
+}
+
+@keyframes rainbowBg {
+    0% { background-color: red; }
+    33% { background-color: blue; }
+    66% { background-color: yellow; }
+    100% { background-color: red; }
+}
+
+@keyframes rainbowText {
+    0% { color: red; }
+    33% { color: blue; }
+    66% { color: yellow; }
+    100% { color: red; }
+}
