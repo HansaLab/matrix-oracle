@@ -12,17 +12,15 @@ body {
 
 .terminal {
     width: 95%;
-    max-width: 750px; /* Zvětšeno */
+    max-width: 750px;
     border: 2px solid #00ff41;
-    padding: 45px; /* Větší polstrování */
+    padding: 45px;
     background: rgba(0, 20, 0, 0.95);
     box-shadow: 0 0 40px #00ff41;
     text-align: center;
     position: relative;
     z-index: 10;
 }
-
-h1 { font-size: 2.5rem; margin-bottom: 5px; }
 
 input {
     width: 85%;
@@ -46,11 +44,10 @@ button {
     font-weight: bold;
     font-size: 1.1rem;
     cursor: pointer;
-    transition: 0.3s;
 }
 
 #status-bar {
-    margin-top: 70px; /* Velká mezera mezi tlačítkem a statusem */
+    margin-top: 70px;
     font-size: 1rem;
     color: #004400;
     font-weight: bold;
@@ -63,46 +60,11 @@ button {
     font-weight: bold;
 }
 
-#top-image-container {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    display: flex;
-    gap: 15px;
-}
-
 #top-image-container img {
     max-height: 280px;
     border: 3px solid #00ff41;
     display: none;
 }
-
-#bitcoin-container {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    display: none;
-    z-index: 50;
-}
-
-#bitcoin-container img {
-    max-width: 280px;
-    border: 2px solid #cd7f32;
-    box-shadow: 0 0 20px #cd7f32;
-}
-
-#radek-ears-container {
-    display: none;
-    position: absolute;
-    top: -130px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 320px;
-}
-
-#radek-ears-container img { width: 100%; }
 
 #furry-label {
     position: fixed;
@@ -124,31 +86,10 @@ button {
     align-items: center;
 }
 
-#video-overlay { background: rgba(0,0,0,0.95); }
-#idiot-overlay { background: #000; color: white; font-size: 2.5rem; text-align: center; z-index: 2000; }
+#idiot-overlay { background: #000; color: white; font-size: 2.5rem; text-align: center; }
 
-/* LGBT MODE */
+/* LGBT MODE ANIMACE */
 .rainbow-mode { animation: rainbowBorder 2s infinite linear !important; }
 .rainbow-mode button { animation: rainbowBg 2s infinite linear !important; color: #fff !important; }
-.rainbow-mode #status-bar { animation: rainbowText 2s infinite linear !important; }
-
-@keyframes rainbowBorder {
-    0% { border-color: red; box-shadow: 0 0 30px red; }
-    33% { border-color: blue; box-shadow: 0 0 30px blue; }
-    66% { border-color: yellow; box-shadow: 0 0 30px yellow; }
-    100% { border-color: red; box-shadow: 0 0 30px red; }
-}
-
-@keyframes rainbowBg {
-    0% { background-color: red; }
-    33% { background-color: blue; }
-    66% { background-color: yellow; }
-    100% { background-color: red; }
-}
-
-@keyframes rainbowText {
-    0% { color: red; }
-    33% { color: blue; }
-    66% { color: yellow; }
-    100% { color: red; }
-}
+@keyframes rainbowBorder { 0% { border-color: red; } 33% { border-color: blue; } 66% { border-color: yellow; } 100% { border-color: red; } }
+@keyframes rainbowBg { 0% { background-color: red; } 33% { background-color: blue; } 66% { background-color: yellow; } 100% { background-color: red; } }
