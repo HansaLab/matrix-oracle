@@ -1,6 +1,18 @@
-const blacklist = ["hitler", "motoriste", "žid", "pirati", "ano", "komuniste", "stacilo", "spd", "okamura", "fasismus", "nacismus"];
+const blacklist = ["hitler", "motoriste", "zide", "zid", "nsdap", "pirati", "ano", "komuniste", "stacilo", "spd", "okamura", "fasismus", "nacismus"];
 let isDead = false;
 let videoPlayed = false;
+
+// TABULKA PEVNÝCH ROZHODNUTÍ
+const specialCombos = [
+    { words: ["radek", "uši"], result: "URČITĚ ANO" },
+    { words: ["matrix", "oracle"], result: "VŽDY A VŠUDE" },
+    { words: ["pivo", "zdarma"], result: "TOTÁLNÍ NE" },
+    { words: ["koci", "idiot"], result: "JASNÝ ANO" },
+    { words: ["kocourek", "idiot"], result: "JASNÝ ANO" }
+];
+
+const answersPositive = ["ANO", "URČITĚ", "JASNÁ VĚC", "ROZHODNĚ", "BEZPOCHYBY", "STOPROCENTNĚ"];
+const answersNegative = ["NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ", "BOHUŽEL NE", "VYLOUČENO", "URČITĚ NE"];
 
 function monitorInput(val) {
     if(isDead) return;
@@ -8,88 +20,87 @@ function monitorInput(val) {
     const raw = val.toLowerCase();
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-    // LGBT MÓD - TRVALÝ
-    if(raw.includes("lgbt")) {
-        document.getElementById('terminal-ui').classList.add('rainbow-mode');
-    }
-
-    // RADEK - UŠI NA 2 MINUTY
+    if(raw.includes("lgbt")) document.getElementById('terminal-ui').classList.add('rainbow-mode');
+    
     if(raw.includes("radek")) {
         document.getElementById('radek-ears-container').style.display = "block";
-        setTimeout(() => {
-            document.getElementById('radek-ears-container').style.display = "none";
-        }, 120000); 
+        setTimeout(() => { document.getElementById('radek-ears-container').style.display = "none"; }, 120000); 
     }
 
-    // FURRY LABEL - TRVALÝ PO ZADÁNÍ
-    if (raw.includes("furry")) {
+    // FURRY / COUFAL LABEL - Zůstane napořád
+    if (raw.includes("furry") || raw.includes("coufal")) {
         document.getElementById('furry-label').style.display = "block";
     }
 
-    // FURRY + HONZA/JAN BLOKACE
-    if (raw.includes("furry") && (raw.includes("honza") || raw.includes("jan"))) {
+    // BLOKACE FURRY/COUFAL + HONZA/JAN
+    if ((raw.includes("furry") || raw.includes("coufal")) && (raw.includes("honza") || raw.includes("jan"))) {
         inputField.value = ""; 
         document.getElementById('status-bar').innerText = "ZAKÁZANÁ KOMBINACE!";
         return; 
     }
 
-    // TUREK & MACINKA (Ukázat a pak vyhodit)
-    if(raw.includes("macinka")) { 
-        showTopImg('macinka-img');
-        setTimeout(() => { triggerShutdown(); }, 2500); 
+    // EASTER EGGS: VIDEA (Lubošek + Hunter loví jeleny)
+    if (raw.includes("lubosek") && raw.includes("hunter") && !videoPlayed) {
+        playVideo("https://www.youtube.com/embed/l2pw-TiT4Tk?autoplay=1", 59000);
     }
-    if(raw.includes("turek")) { 
-        showTopImg('turek-img');
-        setTimeout(() => { triggerShutdown(); }, 2500); 
-    }
-
-    // BITCOIN
-    if(clean.includes("med") || clean.includes("zelezo") || clean.includes("kabel")) {
-        document.getElementById('bitcoin-container').style.display = "block";
-        setTimeout(() => { document.getElementById('bitcoin-container').style.display = "none"; }, 60000);
-    }
-
-    // SSSR + HANZ
     if(raw.includes("sssr") && raw.includes("hanz") && !videoPlayed) {
-        videoPlayed = true;
-        const overlay = document.getElementById('video-overlay');
-        const iframe = document.getElementById('soviet-video');
-        iframe.src = "https://www.youtube.com/embed/UKrA8hv8dvE?autoplay=1";
-        overlay.style.display = "flex";
-        setTimeout(() => {
-            overlay.style.display = "none";
-            iframe.src = "";
-            videoPlayed = false;
-        }, 52000);
+        playVideo("https://www.youtube.com/embed/UKrA8hv8dvE?autoplay=1", 52000);
     }
 
-    // BLACKLIST
+    if(raw.includes("macinka")) { showTopImg('macinka-img'); setTimeout(() => triggerShutdown(), 2500); }
+    if(raw.includes("turek")) { showTopImg('turek-img'); setTimeout(() => triggerShutdown(), 2500); }
+
     blacklist.forEach(word => {
-        if(clean.includes(word) && !raw.includes("turek") && !raw.includes("macinka")) {
-            triggerShutdown();
-        }
+        if(clean.includes(word) && !raw.includes("turek") && !raw.includes("macinka")) triggerShutdown();
     });
 }
 
+function playVideo(url, duration) {
+    videoPlayed = true;
+    const overlay = document.getElementById('video-overlay');
+    const iframe = document.getElementById('secret-video');
+    iframe.src = url; overlay.style.display = "flex";
+    setTimeout(() => { overlay.style.display = "none"; iframe.src = ""; videoPlayed = false; }, duration);
+}
+
 function showTopImg(id) {
-    const img = document.getElementById(id);
-    img.style.display = "block";
+    const img = document.getElementById(id); img.style.display = "block";
     setTimeout(() => { if(!isDead) img.style.display = "none"; }, 4000);
 }
 
-function triggerShutdown() {
-    isDead = true;
-    document.getElementById('idiot-overlay').style.display = "flex";
-}
+function triggerShutdown() { isDead = true; document.getElementById('idiot-overlay').style.display = "flex"; }
 
 function startProcess() {
     if(isDead) return;
-    const res = document.getElementById('final-result');
+    const input = document.getElementById('user-input').value.trim();
     const status = document.getElementById('status-bar');
-    res.innerText = "";
-    status.innerText = "PROBÍHÁ ANALÝZA MATRIXU...";
-    setTimeout(() => {
-        status.innerText = "STATUS: SYSTÉM STABILNÍ";
-        res.innerText = Math.random() > 0.5 ? "ANO" : "NE";
-    }, 1500);
+
+    if (!input.endsWith('?')) {
+        status.innerText = "CHYBA: MUSÍ KONČIT OTAZNÍKEM!";
+        status.style.color = "red";
+        return;
+    }
+
+    document.getElementById('final-result').innerText = "";
+    status.style.color = "#00ff41";
+    
+    const steps = ["DEŠIFRUJI...", "SKENUJI DATABÁZI...", "VÝSLEDEK NALEZEN!"];
+    let i = 0;
+    const loader = setInterval(() => {
+        status.innerText = steps[i++];
+        if(i >= steps.length) { clearInterval(loader); finishProcess(input); }
+    }, 700);
+}
+
+function finishProcess(input) {
+    const res = document.getElementById('final-result');
+    const raw = input.toLowerCase();
+    let ans = Math.random() > 0.5 
+        ? answersPositive[Math.floor(Math.random() * answersPositive.length)] 
+        : answersNegative[Math.floor(Math.random() * answersNegative.length)];
+
+    specialCombos.forEach(combo => {
+        if (combo.words.every(word => raw.includes(word))) ans = combo.result;
+    });
+    res.innerText = ans;
 }
