@@ -1,4 +1,3 @@
-/* ZÁKLADNÍ NASTAVENÍ */
 body {
     margin: 0;
     background-color: #000;
@@ -11,45 +10,59 @@ body {
     overflow: hidden;
 }
 
-/* TERMINÁL (ZELENÝ RÁMEČEK) */
 .terminal {
-    width: 90%;
-    max-width: 600px;
+    width: 95%;
+    max-width: 750px; /* Zvětšeno */
     border: 2px solid #00ff41;
-    padding: 30px;
-    background: rgba(0, 20, 0, 0.9);
-    box-shadow: 0 0 30px #00ff41;
+    padding: 45px; /* Větší polstrování */
+    background: rgba(0, 20, 0, 0.95);
+    box-shadow: 0 0 40px #00ff41;
     text-align: center;
     position: relative;
     z-index: 10;
 }
 
+h1 { font-size: 2.5rem; margin-bottom: 5px; }
+
 input {
-    width: 80%;
+    width: 85%;
     background: transparent;
     border: none;
     border-bottom: 2px solid #00ff41;
     color: #fff;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     padding: 10px;
     text-align: center;
     outline: none;
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
-/* TLAČÍTKO */
 button {
-    margin-top: 30px;
+    margin-top: 40px;
     background: #00ff41;
     color: #000;
     border: none;
-    padding: 15px 40px;
+    padding: 18px 50px;
     font-weight: bold;
+    font-size: 1.1rem;
     cursor: pointer;
     transition: 0.3s;
 }
 
-/* OBRÁZKY A DOPLŇKY */
+#status-bar {
+    margin-top: 70px; /* Velká mezera mezi tlačítkem a statusem */
+    font-size: 1rem;
+    color: #004400;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+#final-result {
+    margin-top: 20px;
+    font-size: 3rem;
+    font-weight: bold;
+}
+
 #top-image-container {
     position: fixed;
     top: 20px;
@@ -57,39 +70,50 @@ button {
     transform: translateX(-50%);
     z-index: 100;
     display: flex;
-    gap: 10px;
+    gap: 15px;
 }
 
 #top-image-container img {
-    max-height: 250px;
-    border: 2px solid #00ff41;
+    max-height: 280px;
+    border: 3px solid #00ff41;
     display: none;
 }
 
 #bitcoin-container {
     position: fixed;
-    top: 10px;
-    left: 10px;
+    top: 15px;
+    left: 15px;
     display: none;
     z-index: 50;
 }
 
 #bitcoin-container img {
-    max-width: 250px;
+    max-width: 280px;
     border: 2px solid #cd7f32;
-    box-shadow: 0 0 15px #cd7f32;
+    box-shadow: 0 0 20px #cd7f32;
 }
 
 #radek-ears-container {
     display: none;
     position: absolute;
-    top: -115px;
+    top: -130px;
     left: 50%;
     transform: translateX(-50%);
-    width: 300px;
+    width: 320px;
 }
 
 #radek-ears-container img { width: 100%; }
+
+#furry-label {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    color: #ff00ff;
+    font-weight: bold;
+    display: none;
+    font-size: 1.8rem;
+    text-shadow: 0 0 15px #ff00ff;
+}
 
 #video-overlay, #idiot-overlay {
     display: none;
@@ -98,42 +122,21 @@ button {
     z-index: 1000;
     justify-content: center;
     align-items: center;
-    text-align: center;
 }
 
-#video-overlay { background: rgba(0,0,0,0.9); }
-#idiot-overlay { background: #000; color: white; font-size: 2rem; z-index: 2000; }
+#video-overlay { background: rgba(0,0,0,0.95); }
+#idiot-overlay { background: #000; color: white; font-size: 2.5rem; text-align: center; z-index: 2000; }
 
-#furry-label {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    color: #ff00ff;
-    font-weight: bold;
-    display: none;
-}
+/* LGBT MODE */
+.rainbow-mode { animation: rainbowBorder 2s infinite linear !important; }
+.rainbow-mode button { animation: rainbowBg 2s infinite linear !important; color: #fff !important; }
+.rainbow-mode #status-bar { animation: rainbowText 2s infinite linear !important; }
 
-/* --- LGBT MÓD (DUHOVÉ VŠECHNO) --- */
-
-.rainbow-mode {
-    animation: rainbowBorder 2s infinite linear !important;
-}
-
-.rainbow-mode button {
-    animation: rainbowBg 2s infinite linear !important;
-    color: #fff !important;
-}
-
-.rainbow-mode #status-bar {
-    animation: rainbowText 2s infinite linear !important;
-}
-
-/* ANIMACE */
 @keyframes rainbowBorder {
-    0% { border-color: red; box-shadow: 0 0 20px red; }
-    33% { border-color: blue; box-shadow: 0 0 20px blue; }
-    66% { border-color: yellow; box-shadow: 0 0 20px yellow; }
-    100% { border-color: red; box-shadow: 0 0 20px red; }
+    0% { border-color: red; box-shadow: 0 0 30px red; }
+    33% { border-color: blue; box-shadow: 0 0 30px blue; }
+    66% { border-color: yellow; box-shadow: 0 0 30px yellow; }
+    100% { border-color: red; box-shadow: 0 0 30px red; }
 }
 
 @keyframes rainbowBg {
