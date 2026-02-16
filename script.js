@@ -7,12 +7,14 @@ function monitorInput(val) {
     const raw = val.toLowerCase();
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-    // 1. RADEK UŠI
+    // 1. RADEK UŠI - OPRAVENO
     if(raw.includes("radek")) {
         const ears = document.getElementById('radek-ears-container');
         if (ears) {
-            ears.style.setProperty('display', 'block', 'important');
-            setTimeout(() => { ears.style.setProperty('display', 'none', 'important'); }, 120000); 
+            ears.style.display = "block"; // Jednoduché zapnutí
+            setTimeout(() => { 
+                ears.style.display = "none"; 
+            }, 120000); 
         }
     }
 
@@ -26,7 +28,7 @@ function monitorInput(val) {
         playVideo("https://www.youtube.com/embed/l2pw-TiT4Tk?autoplay=1", 59000);
     }
 
-    // 4. VRÁCENÝ EASTER EGG: SSSR + HANZ
+    // 4. SSSR + HANZ
     if (clean.includes("sssr") && clean.includes("hanz") && !videoPlayed) {
         playVideo("https://www.youtube.com/embed/UKrA8hv8dvE?autoplay=1", 52000);
     }
@@ -90,7 +92,6 @@ function finishResult(input) {
     
     let ans = Math.random() > 0.5 ? pos[Math.floor(Math.random()*pos.length)] : neg[Math.floor(Math.random()*neg.length)];
     
-    // Speciální odpovědi
     if ((raw.includes("koci") || raw.includes("kocourek")) && raw.includes("idiot")) ans = "JASNÝ ANO";
     if (raw.includes("radek") && raw.includes("uši")) ans = "URČITĚ ANO";
     
