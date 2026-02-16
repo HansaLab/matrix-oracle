@@ -1,3 +1,4 @@
+/* ZÁKLADNÍ NASTAVENÍ */
 body {
     margin: 0;
     background-color: #000;
@@ -10,6 +11,7 @@ body {
     overflow: hidden;
 }
 
+/* TERMINÁL (ZELENÝ RÁMEČEK) */
 .terminal {
     width: 90%;
     max-width: 600px;
@@ -35,6 +37,7 @@ input {
     margin-top: 20px;
 }
 
+/* TLAČÍTKO */
 button {
     margin-top: 30px;
     background: #00ff41;
@@ -43,8 +46,10 @@ button {
     padding: 15px 40px;
     font-weight: bold;
     cursor: pointer;
+    transition: 0.3s;
 }
 
+/* OBRÁZKY A DOPLŇKY */
 #top-image-container {
     position: fixed;
     top: 20px;
@@ -84,19 +89,20 @@ button {
     width: 300px;
 }
 
-#radek-ears-container img {
-    width: 100%;
-}
+#radek-ears-container img { width: 100%; }
 
-#video-overlay {
+#video-overlay, #idiot-overlay {
     display: none;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9);
     z-index: 1000;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
+
+#video-overlay { background: rgba(0,0,0,0.9); }
+#idiot-overlay { background: #000; color: white; font-size: 2rem; z-index: 2000; }
 
 #furry-label {
     position: fixed;
@@ -107,26 +113,39 @@ button {
     display: none;
 }
 
-#idiot-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: #000;
-    color: white;
-    justify-content: center;
-    align-items: center;
-    font-size: 2rem;
-    text-align: center;
-    z-index: 2000;
-}
+/* --- LGBT MÓD (DUHOVÉ VŠECHNO) --- */
 
 .rainbow-mode {
-    animation: rainbowAnim 2s infinite linear;
+    animation: rainbowBorder 2s infinite linear !important;
 }
 
-@keyframes rainbowAnim {
-    0% { color: red; border-color: red; box-shadow: 0 0 20px red; }
-    33% { color: blue; border-color: blue; box-shadow: 0 0 20px blue; }
-    66% { color: yellow; border-color: yellow; box-shadow: 0 0 20px yellow; }
-    100% { color: red; border-color: red; box-shadow: 0 0 20px red; }
+.rainbow-mode button {
+    animation: rainbowBg 2s infinite linear !important;
+    color: #fff !important;
+}
+
+.rainbow-mode #status-bar {
+    animation: rainbowText 2s infinite linear !important;
+}
+
+/* ANIMACE */
+@keyframes rainbowBorder {
+    0% { border-color: red; box-shadow: 0 0 20px red; }
+    33% { border-color: blue; box-shadow: 0 0 20px blue; }
+    66% { border-color: yellow; box-shadow: 0 0 20px yellow; }
+    100% { border-color: red; box-shadow: 0 0 20px red; }
+}
+
+@keyframes rainbowBg {
+    0% { background-color: red; }
+    33% { background-color: blue; }
+    66% { background-color: yellow; }
+    100% { background-color: red; }
+}
+
+@keyframes rainbowText {
+    0% { color: red; }
+    33% { color: blue; }
+    66% { color: yellow; }
+    100% { color: red; }
 }
