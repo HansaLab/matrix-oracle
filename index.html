@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATRIX ORACLE - GitHub Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="master-wrapper">
+        <div id="video-overlay">
+            <iframe id="soviet-video" width="80%" height="80%" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+
+        <div id="top-image-container">
+            <img id="macinka-img" src="kokot.jpg" alt="Macinka">
+            <img id="turek-img" src="debil.jfif" alt="Turek">
+        </div>
+
+        <div id="bitcoin-container">
+            <img src="bitcoin.jpg" alt="Bitcoin">
+        </div>
+
+        <div id="furry-label">Furry = Coufal</div>
+
+        <div id="terminal-ui" class="terminal">
+            <div id="radek-ears-container">
+                <img src="radek.gif" alt="Radek Ears">
+            </div>
+
+            <h1>MATRIX ORACLE</h1>
+            <p>System: ONLINE | Politics: UNFILTERED</p>
+            
+            <input type="text" id="user-input" placeholder="Zeptej se na osud..." oninput="monitorInput(this.value)">
+            
+            <div class="actions">
+                <button id="main-btn" onclick="startProcess()">ANALYŽOVAT</button>
+            </div>
+            
+            <div id="status-bar">STATUS: SYSTÉM STABILNÍ</div>
+            <div id="final-result"></div>
+        </div>
+
+        <div id="idiot-overlay">
+            Původní program jsme museli zavřít, neboť jste asi IDIOT.
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
