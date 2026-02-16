@@ -11,80 +11,47 @@ body {
 }
 
 .terminal {
-    width: 95%;
-    max-width: 750px;
+    width: 90%;
+    max-width: 700px;
     border: 2px solid #00ff41;
-    padding: 50px;
-    background: rgba(0, 15, 0, 0.95);
-    box-shadow: 0 0 40px #00ff41;
+    padding: 40px;
+    background: rgba(0, 10, 0, 0.9);
+    box-shadow: 0 0 30px #00ff41;
     text-align: center;
     position: relative;
-    z-index: 10;
-}
-
-#radek-ears-container {
-    position: absolute;
-    top: -140px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 350px;
-    z-index: 20;
 }
 
 input {
-    width: 85%;
+    width: 80%;
     background: transparent;
     border: none;
     border-bottom: 2px solid #00ff41;
     color: #fff;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     padding: 10px;
     text-align: center;
     outline: none;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 button {
-    margin-top: 45px;
+    margin-top: 30px;
     background: #00ff41;
     color: #000;
     border: none;
-    padding: 20px 60px;
+    padding: 15px 40px;
     font-weight: bold;
-    font-size: 1.2rem;
     cursor: pointer;
 }
 
-#status-bar {
-    margin-top: 80px;
-    font-size: 1.1rem;
-    color: #008800;
-    font-weight: bold;
-}
+#status-bar { margin-top: 50px; font-weight: bold; }
+#final-result { margin-top: 20px; font-size: 3rem; font-weight: bold; }
 
-#final-result {
-    margin-top: 25px;
-    font-size: 3.5rem;
-    font-weight: bold;
+/* Pozice pro uši - budou se vkládat nad nadpis */
+.ears-style {
+    position: absolute;
+    top: -130px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
 }
-
-#furry-label {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    color: #ff00ff;
-    font-weight: bold;
-    display: none;
-    font-size: 2rem;
-}
-
-#video-overlay, #idiot-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-
-#idiot-overlay { background: #000; color: #fff; font-size: 3rem; text-align: center; }
