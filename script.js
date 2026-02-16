@@ -1,23 +1,44 @@
-const blacklist = ["hitler", "motoriste", "zide", "pirati", "ano", "komuniste", "stacilo", "turek", "macinka", "spd", "okamura", "fasismus", "nacismus"];
+const blacklist = ["hitler", "motoriste", "zide", "pirati", "ano", "komuniste", "stacilo", "spd", "okamura", "fasismus", "nacismus"];
 let isDead = false;
 let videoPlayed = false;
 
 function monitorInput(val) {
     if(isDead) return;
+    const inputField = document.getElementById('user-input');
     const raw = val.toLowerCase();
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-    // RADEK TRIGGER
+    // 1. LGBT MÓD - DUHOVÝ TEXT POŘÁD
+    if(raw.includes("lgbt")) {
+        document.getElementById('terminal-ui').classList.add('rainbow-mode');
+    }
+
+    // 2. RADEK - UŠI NA 2 MINUTY (120 000 ms)
     if(raw.includes("radek")) {
         document.getElementById('radek-ears-container').style.display = "block";
         setTimeout(() => {
             document.getElementById('radek-ears-container').style.display = "none";
-        }, 15000);
+        }, 120000); 
     }
 
-    // MACINKA & TUREK
-    if(raw.includes("macinka")) { showTopImg('macinka-img'); }
-    if(raw.includes("turek")) { showTopImg('turek-img'); }
+    // 3. FURRY BLOKACE (HONZA / JAN)
+    if (raw.includes("furry") && (raw.includes("honza") || raw.includes("jan"))) {
+        inputField.value = ""; 
+        document.getElementById('status-bar').innerText = "ZAKÁZANÁ KOMBINACE!";
+        return; 
+    }
+
+    // 4. MACINKA (Zobrazí obrázek a pak vyhodí)
+    if(raw.includes("macinka")) { 
+        showTopImg('macinka-img');
+        setTimeout(() => { triggerShutdown(); }, 2000); // Vyhodí tě po 2 sekundách
+    }
+
+    // 5. TUREK (Zobrazí obrázek a pak vyhodí)
+    if(raw.includes("turek")) { 
+        showTopImg('turek-img');
+        setTimeout(() => { triggerShutdown(); }, 2000); // Vyhodí tě po 2 sekundách
+    }
 
     // BITCOIN (Měď, Železo, Kabel)
     if(clean.includes("med") || clean.includes("zelezo") || clean.includes("kabel")) {
@@ -41,19 +62,12 @@ function monitorInput(val) {
         }, 52000);
     }
 
-    // LGBT MÓD
-    if(raw.includes("lgbt")) {
-        document.getElementById('terminal-ui').classList.add('rainbow-mode');
-    } else {
-        document.getElementById('terminal-ui').classList.remove('rainbow-mode');
-    }
-
-    // FURRY LABEL
+    // FURRY LABEL (samotné slovo furry)
     document.getElementById('furry-label').style.display = raw.includes("furry") ? "block" : "none";
 
-    // BLACKLIST CHECK
+    // BLACKLIST CHECK (ostatní slova)
     blacklist.forEach(word => {
-        if(clean.includes(word)) {
+        if(clean.includes(word) && !raw.includes("turek") && !raw.includes("macinka")) {
             triggerShutdown();
         }
     });
@@ -62,7 +76,8 @@ function monitorInput(val) {
 function showTopImg(id) {
     const img = document.getElementById(id);
     img.style.display = "block";
-    setTimeout(() => { img.style.display = "none"; }, 4000);
+    // Obrázek zmizí jen pokud systém ještě běží
+    setTimeout(() => { if(!isDead) img.style.display = "none"; }, 4000);
 }
 
 function triggerShutdown() {
