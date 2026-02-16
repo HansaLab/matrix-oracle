@@ -2,61 +2,44 @@ const blacklist = ["hitler", "motoriste", "zide", "zid", "nsdap", "pirati", "ano
 let isDead = false;
 let videoPlayed = false;
 
-// POJISTKA: Schování prvků hned po načtení
-window.onload = function() {
-    document.getElementById('radek-ears-container').style.display = 'none';
-    document.getElementById('bitcoin-container').style.display = 'none';
-    document.getElementById('macinka-img').style.display = 'none';
-    document.getElementById('turek-img').style.display = 'none';
-};
-
-const specialCombos = [
-    { words: ["radek", "uši"], result: "JASNÝ ANO" },
-    { words: ["koci", "idiot"], result: "URČITĚ ANO" },
-    { words: ["kocourek", "idiot"], result: "URČITĚ ANO" },
-    { words: ["matrix", "oracle"], result: "VŽDY" }
-];
-
-const answersPositive = ["ANO", "URČITĚ", "JASNÁ VĚC", "ROZHODNĚ", "BEZPOCHYBY"];
-const answersNegative = ["NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ", "BOHUŽEL NE", "VYLOUČENO"];
-
 function monitorInput(val) {
     if(isDead) return;
     const raw = val.toLowerCase();
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
+    // LGBT
     if(raw.includes("lgbt")) document.getElementById('terminal-ui').classList.add('rainbow-mode');
     
-    if(raw.includes("radek")) {
-        const ears = document.getElementById('radek-ears-container');
-        ears.style.setProperty('display', 'block', 'important');
-        setTimeout(() => { ears.style.setProperty('display', 'none', 'important'); }, 120000); 
+    // RADEK
+    if(raw.includes("radek") && !document.querySelector('#radek-ears-container img')) {
+        document.getElementById('radek-ears-container').innerHTML = '<img src="radek.gif" style="width:100%">';
+        setTimeout(() => { document.getElementById('radek-ears-container').innerHTML = ""; }, 120000); 
     }
 
+    // FURRY / COUFAL
     if (clean.includes("furry") || clean.includes("coufal")) {
-        const furry = document.getElementById('furry-label');
-        furry.style.setProperty('display', 'block', 'important');
+        document.getElementById('furry-label').style.display = "block";
     }
 
+    // LUBOŠEK + HUNTER
     if (clean.includes("lubosek") && clean.includes("hunter") && !videoPlayed) {
         playVideo("https://www.youtube.com/embed/l2pw-TiT4Tk?autoplay=1", 59000);
     }
 
-    if(raw.includes("macinka")) { 
-        const img = document.getElementById('macinka-img');
-        img.style.setProperty('display', 'block', 'important');
-        setTimeout(() => triggerShutdown(), 2500); 
+    // TUREK / MACINKA
+    if(raw.includes("macinka") && !isDead) {
+        document.getElementById('top-image-container').innerHTML = '<img src="kokot.jpg">';
+        setTimeout(() => triggerShutdown(), 2500);
     }
-    if(raw.includes("turek")) { 
-        const img = document.getElementById('turek-img');
-        img.style.setProperty('display', 'block', 'important');
-        setTimeout(() => triggerShutdown(), 2500); 
+    if(raw.includes("turek") && !isDead) {
+        document.getElementById('top-image-container').innerHTML = '<img src="debil.jfif">';
+        setTimeout(() => triggerShutdown(), 2500);
     }
 
-    if(clean.includes("med") || clean.includes("zelezo")) {
-        const btc = document.getElementById('bitcoin-container');
-        btc.style.setProperty('display', 'block', 'important');
-        setTimeout(() => { btc.style.setProperty('display', 'none', 'important'); }, 60000);
+    // BITCOIN
+    if((clean.includes("med") || clean.includes("zelezo")) && !document.querySelector('#bitcoin-container img')) {
+        document.getElementById('bitcoin-container').innerHTML = '<img src="bitcoin.jpg" style="max-width:600px; border-bottom:3px solid #cd7f32;">';
+        setTimeout(() => { document.getElementById('bitcoin-container').innerHTML = ""; }, 60000);
     }
 
     blacklist.forEach(word => {
@@ -72,39 +55,40 @@ function playVideo(url, duration) {
     setTimeout(() => { overlay.style.display = "none"; iframe.src = ""; videoPlayed = false; }, duration);
 }
 
-function triggerShutdown() { isDead = true; document.getElementById('idiot-overlay').style.display = "flex"; }
+function triggerShutdown() { 
+    isDead = true; 
+    document.getElementById('idiot-overlay').style.display = "flex"; 
+}
 
 function startProcess() {
     if(isDead) return;
     const input = document.getElementById('user-input').value.trim();
     const status = document.getElementById('status-bar');
-
     if (!input.endsWith('?')) {
         status.innerText = "CHYBA: MUSÍ KONČIT OTAZNÍKEM!";
         status.style.color = "red";
         return;
     }
-
     document.getElementById('final-result').innerText = "";
     status.style.color = "#00ff41";
-    
     const steps = ["DEŠIFRUJI...", "SKENUJI DATABÁZI...", "VÝSLEDEK NALEZEN!"];
     let i = 0;
     const loader = setInterval(() => {
         status.innerText = steps[i++];
-        if(i >= steps.length) { clearInterval(loader); finishProcess(input); }
+        if(i >= steps.length) { clearInterval(loader); finishResult(input); }
     }, 800);
 }
 
-function finishProcess(input) {
+function finishResult(input) {
     const res = document.getElementById('final-result');
     const raw = input.toLowerCase();
-    let ans = Math.random() > 0.5 
-        ? answersPositive[Math.floor(Math.random() * answersPositive.length)] 
-        : answersNegative[Math.floor(Math.random() * answersNegative.length)];
-
-    specialCombos.forEach(combo => {
-        if (combo.words.every(word => raw.includes(word))) ans = combo.result;
-    });
+    const pos = ["ANO", "URČITĚ", "JASNÁ VĚC", "ROZHODNĚ"];
+    const neg = ["NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ", "VYLOUČENO"];
+    
+    let ans = Math.random() > 0.5 ? pos[Math.floor(Math.random()*pos.length)] : neg[Math.floor(Math.random()*neg.length)];
+    
+    if ((raw.includes("koci") || raw.includes("kocourek")) && raw.includes("idiot")) ans = "JASNÝ ANO";
+    if (raw.includes("radek") && raw.includes("uši")) ans = "URČITĚ ANO";
+    
     res.innerText = ans;
 }
