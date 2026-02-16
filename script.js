@@ -1,4 +1,4 @@
-const blacklist = ["hitler", "motoriste", "zide", "pirati", "ano", "komuniste", "stacilo", "spd", "okamura", "fasismus", "nacismus"];
+const blacklist = ["hitler", "motoriste", "žid", "pirati", "ano", "komuniste", "stacilo", "spd", "okamura", "fasismus", "nacismus"];
 let isDead = false;
 let videoPlayed = false;
 
@@ -8,12 +8,12 @@ function monitorInput(val) {
     const raw = val.toLowerCase();
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-    // 1. LGBT MÓD - Duhové všechno a napořád
+    // LGBT MÓD - TRVALÝ
     if(raw.includes("lgbt")) {
         document.getElementById('terminal-ui').classList.add('rainbow-mode');
     }
 
-    // 2. RADEK - Uši na 2 minuty (120000 ms)
+    // RADEK - UŠI NA 2 MINUTY
     if(raw.includes("radek")) {
         document.getElementById('radek-ears-container').style.display = "block";
         setTimeout(() => {
@@ -21,14 +21,19 @@ function monitorInput(val) {
         }, 120000); 
     }
 
-    // 3. FURRY + HONZA/JAN BLOKACE
+    // FURRY LABEL - TRVALÝ PO ZADÁNÍ
+    if (raw.includes("furry")) {
+        document.getElementById('furry-label').style.display = "block";
+    }
+
+    // FURRY + HONZA/JAN BLOKACE
     if (raw.includes("furry") && (raw.includes("honza") || raw.includes("jan"))) {
         inputField.value = ""; 
         document.getElementById('status-bar').innerText = "ZAKÁZANÁ KOMBINACE!";
         return; 
     }
 
-    // 4. TUREK & MACINKA (Ukázat a pak vyhodit)
+    // TUREK & MACINKA (Ukázat a pak vyhodit)
     if(raw.includes("macinka")) { 
         showTopImg('macinka-img');
         setTimeout(() => { triggerShutdown(); }, 2500); 
@@ -57,8 +62,6 @@ function monitorInput(val) {
             videoPlayed = false;
         }, 52000);
     }
-
-    document.getElementById('furry-label').style.display = raw.includes("furry") ? "block" : "none";
 
     // BLACKLIST
     blacklist.forEach(word => {
@@ -90,4 +93,3 @@ function startProcess() {
         res.innerText = Math.random() > 0.5 ? "ANO" : "NE";
     }, 1500);
 }
-
