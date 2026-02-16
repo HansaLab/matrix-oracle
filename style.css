@@ -59,72 +59,39 @@ button {
     font-weight: bold;
 }
 
-/* --- OPRAVA: Všechny tyto prvky MUSÍ být display: none --- */
-
+/* Pozice pro dynamické prvky */
 #radek-ears-container {
-    display: none !important;
     position: absolute;
     top: -140px;
     left: 50%;
     transform: translateX(-50%);
     width: 350px;
-    z-index: 20;
 }
 
 #bitcoin-container {
-    display: none !important;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+    top: 0; left: 0; width: 100%;
     text-align: center;
-    z-index: 5;
-}
-
-#bitcoin-container img {
-    max-width: 100%;
-    height: auto;
 }
 
 #top-image-container {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    top: 20px; right: 20px;
+    display: flex; flex-direction: column; gap: 15px;
     z-index: 100;
 }
 
-#top-image-container img {
-    display: none !important;
-    max-height: 250px;
-    border: 2px solid #00ff41;
-}
-
-#furry-label {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    color: #ff00ff;
-    font-weight: bold;
-    display: none !important;
-    font-size: 2rem;
-    text-shadow: 0 0 15px #ff00ff;
-}
+#top-image-container img { max-height: 250px; border: 2px solid #00ff41; }
+#furry-label { position: fixed; bottom: 30px; right: 30px; color: #ff00ff; font-weight: bold; display: none; font-size: 2rem; }
 
 #video-overlay, #idiot-overlay {
     display: none;
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
     z-index: 1000;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; align-items: center;
 }
 #idiot-overlay { background: #000; color: #fff; font-size: 3rem; text-align: center; }
 
-/* LGBT RAINBOW */
 .rainbow-mode { animation: rainbowBorder 2s infinite linear !important; }
-.rainbow-mode button { animation: rainbowBg 2s infinite linear !important; color: white !important; }
 @keyframes rainbowBorder { 0% { border-color: red; } 33% { border-color: blue; } 66% { border-color: yellow; } 100% { border-color: red; } }
-@keyframes rainbowBg { 0% { background-color: red; } 33% { background-color: blue; } 66% { background-color: yellow; } 100% { background-color: red; } }
