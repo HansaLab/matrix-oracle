@@ -14,13 +14,15 @@ body {
     width: 95%;
     max-width: 750px;
     border: 2px solid #00ff41;
-    padding: 45px;
-    background: rgba(0, 20, 0, 0.95);
+    padding: 50px;
+    background: rgba(0, 15, 0, 0.95);
     box-shadow: 0 0 40px #00ff41;
     text-align: center;
     position: relative;
     z-index: 10;
 }
+
+h1 { font-size: 2.8rem; letter-spacing: 3px; margin-bottom: 10px; }
 
 input {
     width: 85%;
@@ -28,11 +30,11 @@ input {
     border: none;
     border-bottom: 2px solid #00ff41;
     color: #fff;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     padding: 10px;
     text-align: center;
     outline: none;
-    margin-top: 25px;
+    margin-top: 30px;
 }
 
 button {
@@ -40,31 +42,48 @@ button {
     background: #00ff41;
     color: #000;
     border: none;
-    padding: 18px 50px;
+    padding: 20px 60px;
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     cursor: pointer;
+    text-transform: uppercase;
 }
 
 #status-bar {
-    margin-top: 70px;
-    font-size: 1rem;
-    color: #004400;
+    margin-top: 80px; /* POŘÁDNÁ MEZERA */
+    font-size: 1.1rem;
+    color: #008800;
     font-weight: bold;
-    letter-spacing: 2px;
 }
 
 #final-result {
-    margin-top: 20px;
-    font-size: 3rem;
+    margin-top: 25px;
+    font-size: 3.5rem;
     font-weight: bold;
 }
 
-#top-image-container img {
-    max-height: 280px;
-    border: 3px solid #00ff41;
+/* OPRAVA: Schování prvků při startu */
+#radek-ears-container {
     display: none;
+    position: absolute;
+    top: -140px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 350px;
 }
+
+#bitcoin-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    width: 100%;
+    text-align: center;
+}
+
+#bitcoin-container img { max-width: 600px; border-bottom: 3px solid #cd7f32; }
 
 #furry-label {
     position: fixed;
@@ -73,10 +92,11 @@ button {
     color: #ff00ff;
     font-weight: bold;
     display: none;
-    font-size: 1.8rem;
+    font-size: 2rem;
     text-shadow: 0 0 15px #ff00ff;
 }
 
+/* Ostatní overlaye */
 #video-overlay, #idiot-overlay {
     display: none;
     position: fixed;
@@ -85,11 +105,13 @@ button {
     justify-content: center;
     align-items: center;
 }
+#idiot-overlay { background: #000; color: #fff; font-size: 3rem; text-align: center; }
 
-#idiot-overlay { background: #000; color: white; font-size: 2.5rem; text-align: center; }
-
-/* LGBT MODE ANIMACE */
+/* LGBT RAINBOW */
 .rainbow-mode { animation: rainbowBorder 2s infinite linear !important; }
-.rainbow-mode button { animation: rainbowBg 2s infinite linear !important; color: #fff !important; }
+.rainbow-mode button { animation: rainbowBg 2s infinite linear !important; color: white !important; }
+.rainbow-mode #status-bar { animation: rainbowText 2s infinite linear !important; }
+
 @keyframes rainbowBorder { 0% { border-color: red; } 33% { border-color: blue; } 66% { border-color: yellow; } 100% { border-color: red; } }
 @keyframes rainbowBg { 0% { background-color: red; } 33% { background-color: blue; } 66% { background-color: yellow; } 100% { background-color: red; } }
+@keyframes rainbowText { 0% { color: red; } 33% { color: blue; } 66% { color: yellow; } 100% { color: red; } }
