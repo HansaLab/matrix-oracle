@@ -7,20 +7,21 @@ const blacklist = [
 
 let isDead = false;
 
-// Funkce pro okamžité efekty při psaní
+// OKAMŽITÝ EFEKT PŘI PSANÍ
 function monitorInput(val) {
     if(isDead) return;
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const terminal = document.querySelector('.terminal');
 
-    // Uši pro Radka vyskočí hned
     if(clean.includes("radek")) {
         if (!document.getElementById('radek-ears')) {
             const earsImg = document.createElement('img');
             earsImg.id = 'radek-ears';
-            earsImg.src = 'radek (1).gif'; // Odpovídá tvému názvu souboru
+            // Přejmenuj svůj soubor na radek.gif pro správnou funkčnost
+            earsImg.src = 'radek.gif'; 
             earsImg.className = 'ears-style';
             terminal.appendChild(earsImg);
+            
             setTimeout(() => { if(earsImg) earsImg.remove(); }, 60000);
         }
     }
@@ -31,7 +32,7 @@ function triggerShutdown() {
     document.getElementById('idiot-overlay').style.display = "flex";
 }
 
-// Funkce pro efekty po zmáčknutí tlačítka
+// EFEKTY PO STISKNUTÍ TLAČÍTKA
 function startProcess() {
     if(isDead) return;
     const inputField = document.getElementById('user-input');
@@ -39,13 +40,12 @@ function startProcess() {
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const status = document.getElementById('status-bar');
 
-    // 1. BLOKACE: Honza / Jan
+    // Kontrola blokovaných jmen
     if (clean.includes("honza") || clean.includes("jan")) {
         triggerShutdown();
         return;
     }
 
-    // 2. KONTROLA BLACKLISTU
     let blocked = false;
     blacklist.forEach(word => {
         if(clean.includes(word)) {
@@ -55,16 +55,14 @@ function startProcess() {
     });
     if(blocked) return;
 
-    // 3. POVINNÝ OTAZNÍK
+    // Povinný otazník
     if (!val.endsWith('?')) {
         status.innerText = "CHYBA: MUSÍ KONČIT OTAZNÍKEM!";
         status.style.color = "red";
         return;
     }
 
-    // --- SPECIÁLNÍ ÚČINKY ---
-
-    // Luboš + Hunter (Pozadí na 10s)
+    // Hunter pozadí
     if (clean.includes("lubos") && clean.includes("hunter")) {
         document.body.style.backgroundImage = "url('hunter.jfif')";
         document.body.style.backgroundSize = "cover";
@@ -72,19 +70,19 @@ function startProcess() {
         setTimeout(() => { document.body.style.backgroundImage = "none"; }, 10000);
     }
 
-    // Duha (Navždy do F5)
+    // Duhový mód
     if (clean.includes("duha")) {
         document.body.classList.add("rainbow-mode");
     }
 
-    // Furry / Coufal (Nápis na 8 min)
+    // Furry nápis
     if (clean.includes("furry") || clean.includes("coufal")) {
         const label = document.getElementById('furry-label');
         label.style.display = "block";
         setTimeout(() => { label.style.display = "none"; }, 480000);
     }
 
-    // --- VÝPOČET ODPOVĚDI ---
+    // Proces analýzy
     document.getElementById('final-result').innerText = "";
     status.style.color = "#00ff41";
     status.innerText = "PROHLEDÁVÁM MATRIX...";
@@ -96,7 +94,6 @@ function startProcess() {
         
         let answer = Math.random() > 0.5 ? pos[Math.floor(Math.random()*pos.length)] : neg[Math.floor(Math.random()*neg.length)];
         if(clean.includes("radek")) answer = "JASNÝ ANO";
-
         document.getElementById('final-result').innerText = answer;
     }, 1500);
 }
