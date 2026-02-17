@@ -14,7 +14,7 @@ function monitorInput(val) {
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const terminal = document.querySelector('.terminal');
 
-    // Velikonoční vajíčko: Radek
+    // Velikonoční vajíčko: Radek (Uši)
     if(clean.includes("radek")) {
         if (!document.getElementById('radek-ears')) {
             const earsImg = document.createElement('img');
@@ -29,12 +29,12 @@ function monitorInput(val) {
         }
     }
 
-    // Velikonoční vajíčko: Okurka Znojmia (opraveno na tvůj soubor)
+    // Velikonoční vajíčko: Okurky Znojmia
     if(clean.includes("okurka")) {
         if (!document.getElementById('znojmia-left')) {
             const leftOkurka = document.createElement('img');
             leftOkurka.id = 'znojmia-left';
-            leftOkurka.src = 'okurka.avif'; 
+            leftOkurka.src = 'okurka.avif'; // Použije tvůj nahraný soubor
             leftOkurka.style = "position:fixed; left:20px; top:50%; transform:translateY(-50%); width:180px; z-index:100; pointer-events:none;";
             document.body.appendChild(leftOkurka);
 
@@ -65,19 +65,21 @@ function startProcess() {
     const val = inputField.value.trim();
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-    // Fixní paměť: Pokud je otázka stejná, nic nelosuj a ukaž starý výsledek
+    // --- KLÍČOVÁ ZMĚNA: PAMĚŤ OTÁZKY ---
+    // Pokud je text v poli stejný jako minule, neprováděj novou analýzu
     if (val === lastQuestion && lastAnswer !== "") {
         resultDiv.innerText = lastAnswer;
-        status.innerText = "STÁLE STEJNÝ OSUD...";
+        status.innerText = "OSUD JE JIŽ DANÝ...";
         return;
     }
 
-    // Cenzura a otazník
+    // Cenzura
     if (clean.includes("honza") || clean.includes("jan")) { triggerShutdown(); return; }
     let blocked = false;
     blacklist.forEach(word => { if(clean.includes(word)) blocked = true; });
     if(blocked) { triggerShutdown(); return; }
 
+    // Kontrola otazníku
     if (!val.endsWith('?')) {
         status.innerText = "CHYBA: MUSÍ KONČIT OTAZNÍKEM!";
         status.style.color = "red";
@@ -85,7 +87,7 @@ function startProcess() {
         return;
     }
 
-    // Luboš Lovec - Pozadí na 4 minuty
+    // Luboš a Lovec na 4 minuty
     if (clean.includes("lubos") && clean.includes("lovec")) {
         document.body.style.backgroundImage = "url('hunter.jfif')";
         document.body.style.backgroundSize = "cover";
@@ -102,7 +104,7 @@ function startProcess() {
         status.innerText = "VÝSLEDEK NALEZEN!";
         let currentAnswer = "";
 
-        // Automatické výsledky
+        // Fixní odpovědi pro tvé kombinace
         if (clean.includes("furry") && clean.includes("coufal")) {
             currentAnswer = "Coufal 100% FURRY";
         } 
@@ -115,7 +117,7 @@ function startProcess() {
             currentAnswer = Math.random() > 0.5 ? pos[Math.floor(Math.random()*pos.length)] : neg[Math.floor(Math.random()*neg.length)];
         }
 
-        // Uložíme si to, abychom příště při stejné otázce neměnili názor
+        // Uložíme aktuální otázku a odpověď pro příští kliknutí
         lastQuestion = val;
         lastAnswer = currentAnswer;
         resultDiv.innerText = currentAnswer;
