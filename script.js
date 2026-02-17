@@ -1,4 +1,3 @@
-// Definice blacklistu (musí tu být, jinak skript spadne)
 const blacklist = [
     "hitler", "nsdap", "fasismus", "nacismus", "goring", "himler", "heinrich", "goebbels", "ss", "gestapo", "holocaust", "Göring", "Jews", "žid", "as", "kill",
     "turek", "macinka", "konecna", "okamura", "babis", "fiala", "rajschl",
@@ -10,6 +9,7 @@ let isDead = false;
 let lastQuestion = ""; 
 let lastAnswer = "";   
 
+// Tato funkce MUSÍ existovat, protože ji volá index.html přes oninput
 function monitorInput(val) {
     if(isDead) return;
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -22,17 +22,19 @@ function monitorInput(val) {
             earsImg.id = 'radek-ears';
             earsImg.src = 'radek.gif'; 
             earsImg.className = 'ears-style';
-            terminal.appendChild(earsImg);
-            setTimeout(() => { if(document.getElementById('radek-ears')) document.getElementById('radek-ears').remove(); }, 60000);
+            if(terminal) terminal.appendChild(earsImg);
+            setTimeout(() => { 
+                const e = document.getElementById('radek-ears');
+                if(e) e.remove(); 
+            }, 60000);
         }
     }
 
-    // Velikonoční vajíčko: Okurka Znojmia na boky
+    // Velikonoční vajíčko: Okurka Znojmia
     if(clean.includes("okurka")) {
         if (!document.getElementById('znojmia-left')) {
             const leftOkurka = document.createElement('img');
             leftOkurka.id = 'znojmia-left';
-            // Použil jsem ilustrační odkaz, můžeš si tam dát vlastní soubor okurka.png
             leftOkurka.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Pickle.svg/1200px-Pickle.svg.png'; 
             leftOkurka.style = "position:fixed; left:10px; top:50%; transform:translateY(-50%); width:100px; z-index:100;";
             document.body.appendChild(leftOkurka);
@@ -48,21 +50,26 @@ function monitorInput(val) {
 
 function triggerShutdown() {
     isDead = true;
-    document.getElementById('idiot-overlay').style.display = "flex";
+    const overlay = document.getElementById('idiot-overlay');
+    if(overlay) overlay.style.display = "flex";
 }
 
 function startProcess() {
     if(isDead) return;
+
     const inputField = document.getElementById('user-input');
-    const val = inputField.value.trim();
-    const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const status = document.getElementById('status-bar');
     const resultDiv = document.getElementById('final-result');
 
-    // 1. KONTROLA PAMĚTI (Stejná otázka = stejný výsledek)
+    if(!inputField || !status || !resultDiv) return;
+
+    const val = inputField.value.trim();
+    const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+    // 1. KONTROLA PAMĚTI (Pokud je otázka stejná, nepouštěj novou analýzu)
     if (val === lastQuestion && lastAnswer !== "") {
         resultDiv.innerText = lastAnswer;
-        status.innerText = "VÝSLEDEK (Z PAMĚTI):";
+        status.innerText = "VÝSLEDEK ZŮSTÁVÁ STEJNÝ";
         return;
     }
 
@@ -75,16 +82,20 @@ function startProcess() {
     let blocked = false;
     blacklist.forEach(word => {
         if(clean.includes(word)) {
-            triggerShutdown();
             blocked = true;
         }
     });
-    if(blocked) return;
+
+    if(blocked) {
+        triggerShutdown();
+        return;
+    }
 
     // 3. KONTROLA OTAZNÍKU
     if (!val.endsWith('?')) {
         status.innerText = "CHYBA: MUSÍ KONČIT OTAZNÍKEM!";
         status.style.color = "red";
+        resultDiv.innerText = "";
         return;
     }
 
@@ -118,7 +129,7 @@ function startProcess() {
             currentAnswer = Math.random() > 0.5 ? pos[Math.floor(Math.random()*pos.length)] : neg[Math.floor(Math.random()*neg.length)];
         }
 
-        // Uložení do paměti pro příště
+        // Uložení do paměti
         lastQuestion = val;
         lastAnswer = currentAnswer;
         resultDiv.innerText = currentAnswer;
