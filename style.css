@@ -67,9 +67,10 @@ button {
     display: none;
     justify-content: center; align-items: center;
     text-align: center; font-size: 2.5rem;
+    padding: 20px;
 }
 
-/* Duhový mód */
+/* Animace pro duhový mód */
 .rainbow-mode {
     animation: rainbow-bg 3s infinite;
 }
