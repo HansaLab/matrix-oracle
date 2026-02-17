@@ -8,18 +8,14 @@
 </head>
 <body>
     <div id="master-wrapper">
-        <div id="video-overlay">
-            <iframe id="secret-video" width="80%" height="80%" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        </div>
-
         <div id="dynamic-content-area"></div>
-        <div id="furry-label" style="display:none; position:fixed; bottom:20px; right:20px; color:#ff00ff; font-weight:bold;">Furry = Coufal</div>
+        <div id="furry-label" style="display:none; position:fixed; bottom:20px; right:20px; color:#ff00ff; font-weight:bold; font-size: 1.5rem; z-index: 100;">FURRY = COUFAL</div>
 
         <div id="terminal-ui" class="terminal">
             <h1>MATRIX ORACLE</h1>
             <p>System: ONLINE | Politics: UNFILTERED</p>
             
-            <input type="text" id="user-input" placeholder="Zeptej se na osud (musí končit ?)..." oninput="monitorInput(this.value)">
+            <input type="text" id="user-input" placeholder="Zeptej se na osud (musí končit ?)...">
             
             <div class="actions">
                 <button id="main-btn" onclick="startProcess()">ANALYZOVAT</button>
@@ -29,8 +25,8 @@
             <div id="final-result"></div>
         </div>
 
-        <div id="idiot-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000; color:#fff; z-index:9999; justify-content:center; align-items:center; text-align:center; font-size:2rem;">
-            Původní program jsme museli zavřít, neboť jste asi IDIOT.
+        <div id="idiot-overlay" style="display:none;">
+            Původní program jsme museli zavřít, neboť jste asi KOCI.
         </div>
     </div>
     <script src="script.js"></script>
