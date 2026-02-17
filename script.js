@@ -1,13 +1,27 @@
-// --- OPRAVENÝ MOD: DUHA ---
+const blacklist = [
+    "hitler", "nsdap", "fasismus", "nacismus", "goring", "himler", "heinrich", "goebbels", "ss", "gestapo", "holocaust", "Göring", "Jews", "žid", "as", "kill",
+    "turek", "macinka", "konecna", "okamura", "babis", "fiala", "rajschl",
+    "pirati", "spd", "stacilo", "motoriste", "prisaha",
+    "komuniste", "komunismus", "stalin", "lenin", "gottwald", "mao", "marx"
+];
+
+let isDead = false;
+let lastQuestion = ""; 
+let lastAnswer = "";   
+
+// Pomocná funkce pro čištění textu
+function getCleanText(text) {
+    return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+// --- SPECIÁLNÍ MÓD: DUHA ---
 function activateRainbow(status) {
-    console.log("Aktivuji Duhový mód..."); // Uvidíš v konzoli (F12)
+    console.log("Aktivuji Duhový mód...");
     status.innerText = "SPOUŠTÍM DUHOVÝ PROTOKOL...";
     
     let hue = 0;
-    // Musíme barvit přímo hlavní kontejner nebo body s vysokou prioritou
     const interval = setInterval(() => {
         hue = (hue + 8) % 360;
-        // Použijeme !important přes setProperty, aby to nic nepřebilo
         document.documentElement.style.setProperty('filter', `hue-rotate(${hue}deg)`, 'important');
     }, 40);
 
@@ -19,28 +33,69 @@ function activateRainbow(status) {
     return "OCHUTNEJ DUHU!";
 }
 
-// --- OPRAVENÝ MOD: LUBOŠ ---
+// --- SPECIÁLNÍ MÓD: LUBOŠ ---
 function activateLubos(canvas, status) {
-    console.log("Aktivuji Lovce..."); // Uvidíš v konzoli (F12)
+    console.log("Aktivuji Lovce...");
     status.innerText = "POZOR, LOVEC JE NA BLÍZKU!";
     
-    document.body.style.setProperty('background-image', "url('hunter.jfif')", 'important');
-    document.body.style.backgroundSize = "cover";
-    document.body.style.backgroundPosition = "center";
-    document.body.style.backgroundAttachment = "fixed";
-    document.body.style.backgroundColor = "black";
+    const styleTarget = document.documentElement.style;
+    styleTarget.setProperty('background-image', "url('hunter.jfif')", 'important');
+    styleTarget.setProperty('background-size', 'cover', 'important');
+    styleTarget.setProperty('background-position', 'center', 'important');
+    styleTarget.setProperty('background-repeat', 'no-repeat', 'important');
 
     if(canvas) {
-        canvas.style.transition = "opacity 1s";
-        canvas.style.opacity = "0.2"; // Matrix déšť skoro zmizí, aby byl vidět Luboš
+        canvas.style.display = "none"; // Schováme Matrix kód, aby byl Luboš vidět
     }
 
     setTimeout(() => {
-        document.body.style.backgroundImage = "none";
-        if(canvas) canvas.style.opacity = "1";
+        styleTarget.setProperty('background-image', 'none');
+        if(canvas) canvas.style.display = "block";
     }, 240000);
 
     return "LOVEC IDENTIFIKOVÁN!";
+}
+
+function monitorInput(val) {
+    if(isDead) return;
+    const clean = getCleanText(val);
+    const terminal = document.querySelector('.terminal');
+
+    if(clean.includes("radek")) {
+        if (!document.getElementById('radek-ears')) {
+            const earsImg = document.createElement('img');
+            earsImg.id = 'radek-ears';
+            earsImg.src = 'radek.gif'; 
+            earsImg.className = 'ears-style';
+            if(terminal) terminal.appendChild(earsImg);
+            setTimeout(() => { 
+                const e = document.getElementById('radek-ears');
+                if(e) e.remove(); 
+            }, 60000);
+        }
+    }
+
+    if(clean.includes("okurka")) {
+        if (!document.getElementById('znojmia-left')) {
+            const leftOkurka = document.createElement('img');
+            leftOkurka.id = 'znojmia-left';
+            leftOkurka.src = 'okurka.avif';
+            leftOkurka.style = "position:fixed; left:20px; top:50%; transform:translateY(-50%); width:180px; z-index:100; pointer-events:none;";
+            document.body.appendChild(leftOkurka);
+
+            const rightOkurka = leftOkurka.cloneNode();
+            rightOkurka.id = 'znojmia-right';
+            rightOkurka.style.left = "auto";
+            rightOkurka.style.right = "20px";
+            document.body.appendChild(rightOkurka);
+        }
+    }
+}
+
+function triggerShutdown() {
+    isDead = true;
+    const overlay = document.getElementById('idiot-overlay');
+    if(overlay) overlay.style.display = "flex";
 }
 
 function startProcess() {
@@ -56,11 +111,18 @@ function startProcess() {
     const val = inputField.value.trim();
     const clean = getCleanText(val);
 
-    // 1. Cenzura
+    // Paměť otázky
+    if (val === lastQuestion && lastAnswer !== "") {
+        resultDiv.innerText = lastAnswer;
+        status.innerText = "OSUD JE JIŽ DANÝ...";
+        return;
+    }
+
+    // Cenzura
     if (clean.includes("honza") || clean.includes("jan")) { triggerShutdown(); return; }
     if (blacklist.some(word => clean.includes(getCleanText(word)))) { triggerShutdown(); return; }
 
-    // 2. Kontrola otazníku
+    // Kontrola otazníku
     if (!val.endsWith('?')) {
         status.innerText = "CHYBA: MUSÍ KONČIT OTAZNÍKEM!";
         status.style.color = "red";
@@ -70,7 +132,7 @@ function startProcess() {
 
     let currentAnswer = "";
 
-    // 3. Spouštění módů (přesunuto do funkcí pro čistotu)
+    // Aktivace speciálních módů
     if (clean.includes("lubos") && clean.includes("lovec")) {
         currentAnswer = activateLubos(canvas, status);
     } 
@@ -79,7 +141,7 @@ function startProcess() {
         currentAnswer = activateRainbow(status);
     }
 
-    // 4. Animace "Prohledávám"
+    // Proces analýzy
     resultDiv.innerText = "";
     status.style.color = "#00ff41";
     if (!currentAnswer) status.innerText = "PROHLEDÁVÁM MATRIX...";
