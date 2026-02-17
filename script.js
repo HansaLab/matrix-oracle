@@ -1,8 +1,8 @@
 const blacklist = [
-    "hitler", "nsdap", "fasismus", "nacismus", "goring", "himler", "heinrich", "goebbels", "ss", "gestapo", "holocaust",
+    "hitler", "nsdap", "fasismus", "nacismus", "goring", "himler", "heinrich", "goebbels", "ss", "gestapo", "holocaust",  "Göring", "Jews", "žid", "as", "kill",
     "turek", "macinka", "konecna", "okamura", "babis", "fiala", "rajschl",
-    "ano", "ods", "pirati", "stan", "kdu", "top09", "spd", "stacilo", "motoriste", "prisaha", "cssd", "kscm", "trikolora", "pro", "zeleni", "svobodni",
-    "komuniste", "komunismus", "stalin", "lenin", "gottwald", "stb", "gulag", "procesy", "milada horakova", "reproduce", "znarodneni", "kolektivizace", "vitezny unor", "srp a kladivo", "politicky vezeni"
+    "ano", "ods", "pirati", "stan", "kdu", "top09", "spd", "stacilo", "motoriste", "prisaha", "cssd", "kscm", "trikolora", "Tomio", "zeleni", "svobodni",
+    "komuniste", "komunismus", "stalin", "lenin", "gottwald", "stb", "gulag", "procesy", "kdu-čsl", "zabít", "znarodneni", "kolektivizace", "vitezny unor", "srp a kladivo", "politicky vezeni"
 ];
 
 let isDead = false;
@@ -17,7 +17,6 @@ function monitorInput(val) {
         if (!document.getElementById('radek-ears')) {
             const earsImg = document.createElement('img');
             earsImg.id = 'radek-ears';
-            // Přejmenuj svůj soubor na radek.gif pro správnou funkčnost
             earsImg.src = 'radek.gif'; 
             earsImg.className = 'ears-style';
             terminal.appendChild(earsImg);
@@ -97,3 +96,4 @@ function startProcess() {
         document.getElementById('final-result').innerText = answer;
     }, 1500);
 }
+
