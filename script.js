@@ -1,8 +1,8 @@
 const blacklist = [
     "hitler", "nsdap", "fasismus", "nacismus", "goring", "himler", "heinrich", "goebbels", "ss", "gestapo", "holocaust",  "Göring", "Jews", "žid", "as", "kill",
     "turek", "macinka", "konecna", "okamura", "babis", "fiala", "rajschl",
-    "ano", "ods", "pirati", "okamura", "kdu", "top09", "spd", "stacilo", "motoriste", "prisaha", "cssd", "kscm", "trikolora", "Tomio", "zeleni", "svobodni", "Petr Pavel", "jemnice",
-    "komuniste", "komunismus", "stalin", "lenin", "gottwald", "stb", "gulag", "procesy", "kdu-čsl", "zabít", "znarodneni", "kolektivizace", "vitezny unor", "srp a kladivo", "politicky vezeni"
+    "pirati", "okamura", "spd", "stacilo", "motoriste", "prisaha",
+    "komuniste", "komunismus", "stalin", "lenin", "gottwald", "mao", "marx"
 ];
 
 let isDead = false;
@@ -96,5 +96,6 @@ function startProcess() {
         document.getElementById('final-result').innerText = answer;
     }, 1500);
 }
+
 
 
