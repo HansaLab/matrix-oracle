@@ -9,9 +9,13 @@ let isDead = false;
 let lastQuestion = ""; 
 let lastAnswer = "";   
 
+function getCleanText(text) {
+    return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
 function monitorInput(val) {
     if(isDead) return;
-    const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const clean = getCleanText(val);
     const terminal = document.querySelector('.terminal');
 
     // Velikonoční vajíčko: Radek (Uši)
@@ -34,7 +38,7 @@ function monitorInput(val) {
         if (!document.getElementById('znojmia-left')) {
             const leftOkurka = document.createElement('img');
             leftOkurka.id = 'znojmia-left';
-            leftOkurka.src = 'okurka.avif'; // Použije tvůj nahraný soubor
+            leftOkurka.src = 'okurka.avif';
             leftOkurka.style = "position:fixed; left:20px; top:50%; transform:translateY(-50%); width:180px; z-index:100; pointer-events:none;";
             document.body.appendChild(leftOkurka);
 
@@ -59,25 +63,25 @@ function startProcess() {
     const inputField = document.getElementById('user-input');
     const status = document.getElementById('status-bar');
     const resultDiv = document.getElementById('final-result');
+    const canvas = document.querySelector('canvas');
 
     if(!inputField || !status || !resultDiv) return;
 
     const val = inputField.value.trim();
-    const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const clean = getCleanText(val);
 
-    // --- KLÍČOVÁ ZMĚNA: PAMĚŤ OTÁZKY ---
-    // Pokud je text v poli stejný jako minule, neprováděj novou analýzu
+    // --- PAMĚŤ OTÁZKY ---
     if (val === lastQuestion && lastAnswer !== "") {
         resultDiv.innerText = lastAnswer;
         status.innerText = "OSUD JE JIŽ DANÝ...";
+        status.style.color = "#00ff41";
         return;
     }
 
     // Cenzura
     if (clean.includes("honza") || clean.includes("jan")) { triggerShutdown(); return; }
-    let blocked = false;
-    blacklist.forEach(word => { if(clean.includes(word)) blocked = true; });
-    if(blocked) { triggerShutdown(); return; }
+    const isBlocked = blacklist.some(word => clean.includes(getCleanText(word)));
+    if(isBlocked) { triggerShutdown(); return; }
 
     // Kontrola otazníku
     if (!val.endsWith('?')) {
@@ -87,12 +91,35 @@ function startProcess() {
         return;
     }
 
-    // Luboš a Lovec na 4 minuty
+    // --- MOD: LUBOŠ A LOVEC (OPRAVENO) ---
     if (clean.includes("lubos") && clean.includes("lovec")) {
-        document.body.style.backgroundImage = "url('hunter.jfif')";
+        document.body.style.setProperty('background-image', "url('hunter.jfif')", 'important');
         document.body.style.backgroundSize = "cover";
         document.body.style.backgroundPosition = "center";
-        setTimeout(() => { document.body.style.backgroundImage = "none"; }, 240000);
+        document.body.style.backgroundAttachment = "fixed";
+        if(canvas) canvas.style.opacity = "0.3"; // Aby prosvítal obrázek pod deštěm
+
+        status.innerText = "POZOR, LOVEC JE NA BLÍZKU!";
+        
+        setTimeout(() => { 
+            document.body.style.backgroundImage = "none";
+            if(canvas) canvas.style.opacity = "1.0";
+        }, 240000);
+    }
+
+    // --- MOD: DUHA (OPRAVENO) ---
+    if (clean.includes("duha") || clean.includes("rainbow")) {
+        status.innerText = "SPOUŠTÍM DUHOVÝ PROTOKOL...";
+        let hue = 0;
+        const rainbowInterval = setInterval(() => {
+            hue = (hue + 5) % 360;
+            document.body.style.filter = `hue-rotate(${hue}deg)`;
+        }, 30);
+
+        setTimeout(() => { 
+            clearInterval(rainbowInterval); 
+            document.body.style.filter = "none";
+        }, 30000);
     }
 
     // Proces analýzy
@@ -104,7 +131,7 @@ function startProcess() {
         status.innerText = "VÝSLEDEK NALEZEN!";
         let currentAnswer = "";
 
-        // Fixní odpovědi pro tvé kombinace
+        // Fixní odpovědi
         if (clean.includes("furry") && clean.includes("coufal")) {
             currentAnswer = "Coufal 100% FURRY";
         } 
@@ -112,12 +139,10 @@ function startProcess() {
             currentAnswer = "JASNÝ ANO";
         } 
         else {
-            const pos = ["ANO", "URČITĚ", "ROZHODNĚ", "BEZPOCHYBY"];
-            const neg = ["NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ", "VYLOUČENO"];
-            currentAnswer = Math.random() > 0.5 ? pos[Math.floor(Math.random()*pos.length)] : neg[Math.floor(Math.random()*neg.length)];
+            const answers = ["ANO", "URČITĚ", "ROZHODNĚ", "BEZPOCHYBY", "NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ", "VYLOUČENO"];
+            currentAnswer = answers[Math.floor(Math.random() * answers.length)];
         }
 
-        // Uložíme aktuální otázku a odpověď pro příští kliknutí
         lastQuestion = val;
         lastAnswer = currentAnswer;
         resultDiv.innerText = currentAnswer;
