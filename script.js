@@ -7,18 +7,37 @@ const blacklist = [
 
 let isDead = false;
 
+// Funkce pro okamžité efekty při psaní
+function monitorInput(val) {
+    if(isDead) return;
+    const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const terminal = document.querySelector('.terminal');
+
+    // Uši pro Radka vyskočí hned
+    if(clean.includes("radek")) {
+        if (!document.getElementById('radek-ears')) {
+            const earsImg = document.createElement('img');
+            earsImg.id = 'radek-ears';
+            earsImg.src = 'radek (1).gif'; // Odpovídá tvému názvu souboru
+            earsImg.className = 'ears-style';
+            terminal.appendChild(earsImg);
+            setTimeout(() => { if(earsImg) earsImg.remove(); }, 60000);
+        }
+    }
+}
+
 function triggerShutdown() {
     isDead = true;
     document.getElementById('idiot-overlay').style.display = "flex";
 }
 
+// Funkce pro efekty po zmáčknutí tlačítka
 function startProcess() {
     if(isDead) return;
     const inputField = document.getElementById('user-input');
     const val = inputField.value.trim();
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const status = document.getElementById('status-bar');
-    const terminal = document.querySelector('.terminal');
 
     // 1. BLOKACE: Honza / Jan
     if (clean.includes("honza") || clean.includes("jan")) {
@@ -49,6 +68,7 @@ function startProcess() {
     if (clean.includes("lubos") && clean.includes("hunter")) {
         document.body.style.backgroundImage = "url('hunter.jfif')";
         document.body.style.backgroundSize = "cover";
+        document.body.style.backgroundPosition = "center";
         setTimeout(() => { document.body.style.backgroundImage = "none"; }, 10000);
     }
 
@@ -64,19 +84,7 @@ function startProcess() {
         setTimeout(() => { label.style.display = "none"; }, 480000);
     }
 
-    // Radek (Uši na 1 minutu)
-    if(clean.includes("radek")) {
-        if (!document.getElementById('radek-ears')) {
-            const earsImg = document.createElement('img');
-            earsImg.id = 'radek-ears';
-            earsImg.src = 'radek (1).gif';
-            earsImg.className = 'ears-style';
-            terminal.appendChild(earsImg);
-            setTimeout(() => { if(earsImg) earsImg.remove(); }, 60000);
-        }
-    }
-
-    // --- PROCES ANALÝZY ---
+    // --- VÝPOČET ODPOVĚDI ---
     document.getElementById('final-result').innerText = "";
     status.style.color = "#00ff41";
     status.innerText = "PROHLEDÁVÁM MATRIX...";
