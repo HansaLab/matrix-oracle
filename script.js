@@ -1,13 +1,21 @@
+// Definice blacklistu (musí tu být, jinak skript spadne)
+const blacklist = [
+    "hitler", "nsdap", "fasismus", "nacismus", "goring", "himler", "heinrich", "goebbels", "ss", "gestapo", "holocaust", "Göring", "Jews", "žid", "as", "kill",
+    "turek", "macinka", "konecna", "okamura", "babis", "fiala", "rajschl",
+    "pirati", "spd", "stacilo", "motoriste", "prisaha",
+    "komuniste", "komunismus", "stalin", "lenin", "gottwald", "mao", "marx"
+];
+
 let isDead = false;
-let lastQuestion = ""; // Proměnná pro uložení poslední otázky
-let lastAnswer = "";   // Proměnná pro uložení poslední odpovědi
+let lastQuestion = ""; 
+let lastAnswer = "";   
 
 function monitorInput(val) {
     if(isDead) return;
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const terminal = document.querySelector('.terminal');
 
-    // Radek uši zůstávají dle původního zadání
+    // Velikonoční vajíčko: Radek (Uši)
     if(clean.includes("radek")) {
         if (!document.getElementById('radek-ears')) {
             const earsImg = document.createElement('img');
@@ -15,26 +23,32 @@ function monitorInput(val) {
             earsImg.src = 'radek.gif'; 
             earsImg.className = 'ears-style';
             terminal.appendChild(earsImg);
-            setTimeout(() => { if(earsImg) earsImg.remove(); }, 60000);
+            setTimeout(() => { if(document.getElementById('radek-ears')) document.getElementById('radek-ears').remove(); }, 60000);
         }
     }
 
-    // NOVÝ EASTER EGG: Okurka Znojmia na boky
+    // Velikonoční vajíčko: Okurka Znojmia na boky
     if(clean.includes("okurka")) {
         if (!document.getElementById('znojmia-left')) {
             const leftOkurka = document.createElement('img');
             leftOkurka.id = 'znojmia-left';
-            leftOkurka.src = 'https://www.znojmia.cz/getattachment/9871583d-e592-487c-bc24-583569804e1c/okurky.aspx'; // Nutno nahradit tvým souborem pokud máš
-            leftOkurka.style = "position:fixed; left:0; top:50%; transform:translateY(-50%); width:150px; z-index:100;";
+            // Použil jsem ilustrační odkaz, můžeš si tam dát vlastní soubor okurka.png
+            leftOkurka.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Pickle.svg/1200px-Pickle.svg.png'; 
+            leftOkurka.style = "position:fixed; left:10px; top:50%; transform:translateY(-50%); width:100px; z-index:100;";
             document.body.appendChild(leftOkurka);
 
             const rightOkurka = leftOkurka.cloneNode();
             rightOkurka.id = 'znojmia-right';
             rightOkurka.style.left = "auto";
-            rightOkurka.style.right = "0";
+            rightOkurka.style.right = "10px";
             document.body.appendChild(rightOkurka);
         }
     }
+}
+
+function triggerShutdown() {
+    isDead = true;
+    document.getElementById('idiot-overlay').style.display = "flex";
 }
 
 function startProcess() {
@@ -45,32 +59,45 @@ function startProcess() {
     const status = document.getElementById('status-bar');
     const resultDiv = document.getElementById('final-result');
 
-    // Kontrola duplicity: Pokud je otázka stejná, nevyhodnocuj znovu náhodně
+    // 1. KONTROLA PAMĚTI (Stejná otázka = stejný výsledek)
     if (val === lastQuestion && lastAnswer !== "") {
         resultDiv.innerText = lastAnswer;
         status.innerText = "VÝSLEDEK (Z PAMĚTI):";
         return;
     }
 
-    // Blacklist a cenzura (ponecháno z tvého kódu)
-    if (clean.includes("honza") || clean.includes("jan")) { triggerShutdown(); return; }
+    // 2. CENZURA
+    if (clean.includes("honza") || clean.includes("jan")) {
+        triggerShutdown();
+        return;
+    }
+
     let blocked = false;
-    blacklist.forEach(word => { if(clean.includes(word)) { triggerShutdown(); blocked = true; } });
+    blacklist.forEach(word => {
+        if(clean.includes(word)) {
+            triggerShutdown();
+            blocked = true;
+        }
+    });
     if(blocked) return;
 
+    // 3. KONTROLA OTAZNÍKU
     if (!val.endsWith('?')) {
         status.innerText = "CHYBA: MUSÍ KONČIT OTAZNÍKEM!";
         status.style.color = "red";
         return;
     }
 
-    // EASTER EGG: Luboš a Lovec na 4 minuty (240 000 ms)
+    // 4. SPECIÁLNÍ POZADÍ: LUBOŠ LOVEC (4 minuty)
     if (clean.includes("lubos") && clean.includes("lovec")) {
         document.body.style.backgroundImage = "url('hunter.jfif')";
         document.body.style.backgroundSize = "cover";
+        document.body.style.backgroundPosition = "center";
         setTimeout(() => { document.body.style.backgroundImage = "none"; }, 240000);
     }
 
+    // 5. PROCES ANALÝZY
+    resultDiv.innerText = "";
     status.style.color = "#00ff41";
     status.innerText = "PROHLEDÁVÁM MATRIX...";
     
@@ -91,7 +118,7 @@ function startProcess() {
             currentAnswer = Math.random() > 0.5 ? pos[Math.floor(Math.random()*pos.length)] : neg[Math.floor(Math.random()*neg.length)];
         }
 
-        // Uložení pro příště
+        // Uložení do paměti pro příště
         lastQuestion = val;
         lastAnswer = currentAnswer;
         resultDiv.innerText = currentAnswer;
