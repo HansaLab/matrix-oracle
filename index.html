@@ -15,7 +15,7 @@
             <h1>MATRIX ORACLE</h1>
             <p>System: ONLINE | Politics: UNFILTERED</p>
             
-            <input type="text" id="user-input" placeholder="Zeptej se na osud (musí končit ?)...">
+            <input type="text" id="user-input" placeholder="Zeptej se na osud (musí končit ?)..." oninput="monitorInput(this.value)">
             
             <div class="actions">
                 <button id="main-btn" onclick="startProcess()">ANALYZOVAT</button>
@@ -25,8 +25,8 @@
             <div id="final-result"></div>
         </div>
 
-        <div id="idiot-overlay" style="display:none;">
-            Původní program jsme museli zavřít, neboť jste asi KOCI.
+        <div id="idiot-overlay">
+            Původní program jsme museli zavřít, neboť jste asi IDIOT.
         </div>
     </div>
     <script src="script.js"></script>
