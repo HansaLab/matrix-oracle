@@ -9,13 +9,12 @@ let isDead = false;
 let lastQuestion = ""; 
 let lastAnswer = "";   
 
-// Tato funkce MUSÍ existovat, protože ji volá index.html přes oninput
 function monitorInput(val) {
     if(isDead) return;
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     const terminal = document.querySelector('.terminal');
 
-    // Velikonoční vajíčko: Radek (Uši)
+    // Velikonoční vajíčko: Radek
     if(clean.includes("radek")) {
         if (!document.getElementById('radek-ears')) {
             const earsImg = document.createElement('img');
@@ -30,19 +29,19 @@ function monitorInput(val) {
         }
     }
 
-    // Velikonoční vajíčko: Okurka Znojmia
+    // Velikonoční vajíčko: Okurka Znojmia (opraveno na tvůj soubor)
     if(clean.includes("okurka")) {
         if (!document.getElementById('znojmia-left')) {
             const leftOkurka = document.createElement('img');
             leftOkurka.id = 'znojmia-left';
-            leftOkurka.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Pickle.svg/1200px-Pickle.svg.png'; 
-            leftOkurka.style = "position:fixed; left:10px; top:50%; transform:translateY(-50%); width:100px; z-index:100;";
+            leftOkurka.src = 'okurka.avif'; 
+            leftOkurka.style = "position:fixed; left:20px; top:50%; transform:translateY(-50%); width:180px; z-index:100; pointer-events:none;";
             document.body.appendChild(leftOkurka);
 
             const rightOkurka = leftOkurka.cloneNode();
             rightOkurka.id = 'znojmia-right';
             rightOkurka.style.left = "auto";
-            rightOkurka.style.right = "10px";
+            rightOkurka.style.right = "20px";
             document.body.appendChild(rightOkurka);
         }
     }
@@ -66,32 +65,19 @@ function startProcess() {
     const val = inputField.value.trim();
     const clean = val.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-    // 1. KONTROLA PAMĚTI (Pokud je otázka stejná, nepouštěj novou analýzu)
+    // Fixní paměť: Pokud je otázka stejná, nic nelosuj a ukaž starý výsledek
     if (val === lastQuestion && lastAnswer !== "") {
         resultDiv.innerText = lastAnswer;
-        status.innerText = "VÝSLEDEK ZŮSTÁVÁ STEJNÝ";
+        status.innerText = "STÁLE STEJNÝ OSUD...";
         return;
     }
 
-    // 2. CENZURA
-    if (clean.includes("honza") || clean.includes("jan")) {
-        triggerShutdown();
-        return;
-    }
-
+    // Cenzura a otazník
+    if (clean.includes("honza") || clean.includes("jan")) { triggerShutdown(); return; }
     let blocked = false;
-    blacklist.forEach(word => {
-        if(clean.includes(word)) {
-            blocked = true;
-        }
-    });
+    blacklist.forEach(word => { if(clean.includes(word)) blocked = true; });
+    if(blocked) { triggerShutdown(); return; }
 
-    if(blocked) {
-        triggerShutdown();
-        return;
-    }
-
-    // 3. KONTROLA OTAZNÍKU
     if (!val.endsWith('?')) {
         status.innerText = "CHYBA: MUSÍ KONČIT OTAZNÍKEM!";
         status.style.color = "red";
@@ -99,7 +85,7 @@ function startProcess() {
         return;
     }
 
-    // 4. SPECIÁLNÍ POZADÍ: LUBOŠ LOVEC (4 minuty)
+    // Luboš Lovec - Pozadí na 4 minuty
     if (clean.includes("lubos") && clean.includes("lovec")) {
         document.body.style.backgroundImage = "url('hunter.jfif')";
         document.body.style.backgroundSize = "cover";
@@ -107,7 +93,7 @@ function startProcess() {
         setTimeout(() => { document.body.style.backgroundImage = "none"; }, 240000);
     }
 
-    // 5. PROCES ANALÝZY
+    // Proces analýzy
     resultDiv.innerText = "";
     status.style.color = "#00ff41";
     status.innerText = "PROHLEDÁVÁM MATRIX...";
@@ -116,7 +102,7 @@ function startProcess() {
         status.innerText = "VÝSLEDEK NALEZEN!";
         let currentAnswer = "";
 
-        // AUTOMATICKÝ VÝSLEDEK: Furry + Coufal
+        // Automatické výsledky
         if (clean.includes("furry") && clean.includes("coufal")) {
             currentAnswer = "Coufal 100% FURRY";
         } 
@@ -129,7 +115,7 @@ function startProcess() {
             currentAnswer = Math.random() > 0.5 ? pos[Math.floor(Math.random()*pos.length)] : neg[Math.floor(Math.random()*neg.length)];
         }
 
-        // Uložení do paměti
+        // Uložíme si to, abychom příště při stejné otázce neměnili názor
         lastQuestion = val;
         lastAnswer = currentAnswer;
         resultDiv.innerText = currentAnswer;
