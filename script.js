@@ -1,154 +1,107 @@
-const blacklist = [
-    "hitler", "nsdap", "fasismus", "nacismus", "goring", "himler", "heinrich", "goebbels", "ss", "gestapo", "holocaust", "Göring", "Jews", "žid", "as", "kill",
-    "turek", "macinka", "konecna", "okamura", "babis", "fiala", "rajschl",
-    "pirati", "spd", "stacilo", "motoriste", "prisaha",
-    "komuniste", "komunismus", "stalin", "lenin", "gottwald", "mao", "marx",
-    "rakousky malir"
-];
-
-const weirdWords = ["sex", "porno", "uchyl", "nahota", "pedofil", "pusa", "laska", "gay", "bi", "trans"];
-
-let isDead = false;
-let lastQuestion = ""; 
-let lastAnswer = "";   
-
-function getCleanText(text) {
-    if (!text) return "";
-    return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+body {
+    margin: 0;
+    background-color: #000;
+    background-image: url('pozadi.gif');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #00ff41;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
 }
 
-function setBackgroundVisual(url, durationMs) {
-    const oldGifs = document.querySelectorAll('.active-special');
-    oldGifs.forEach(g => g.remove());
-
-    if (url === 'hmm.gif') {
-        const leftCat = document.createElement('img');
-        const rightCat = document.createElement('img');
-        
-        leftCat.src = rightCat.src = url;
-        leftCat.className = 'hmm-side-gif hmm-left active-special';
-        rightCat.className = 'hmm-side-gif hmm-right active-special';
-        
-        document.body.appendChild(leftCat);
-        document.body.appendChild(rightCat);
-
-        setTimeout(() => {
-            leftCat.remove();
-            rightCat.remove();
-        }, durationMs);
-    } else {
-        const gifImg = document.createElement('img');
-        gifImg.src = url;
-        gifImg.className = 'special-bg-gif active-special';
-        document.body.appendChild(gifImg);
-
-        setTimeout(() => {
-            gifImg.remove();
-        }, durationMs);
-    }
+.terminal {
+    width: 90%;
+    max-width: 650px;
+    border: 2px solid #00ff41;
+    padding: 40px;
+    background: rgba(0, 10, 0, 0.9);
+    box-shadow: 0 0 30px #00ff41;
+    text-align: center;
+    position: relative;
+    border-radius: 25px;
+    z-index: 10;
 }
 
-function monitorInput(val) {
-    if(isDead) return;
-    const clean = getCleanText(val);
-    const terminal = document.querySelector('.terminal');
-
-    if(clean.includes("radek")) {
-        if (!document.getElementById('radek-ears')) {
-            const earsImg = document.createElement('img');
-            earsImg.id = 'radek-ears';
-            earsImg.src = 'radek.gif'; 
-            earsImg.className = 'ears-style';
-            if(terminal) terminal.appendChild(earsImg);
-            setTimeout(() => { 
-                const e = document.getElementById('radek-ears');
-                if(e) e.remove(); 
-            }, 60000);
-        }
-    }
+.ears-style {
+    position: absolute;
+    top: -140px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    z-index: 20;
+    pointer-events: none;
 }
 
-function triggerShutdown() {
-    isDead = true;
-    const overlay = document.getElementById('idiot-overlay');
-    if(overlay) overlay.style.display = "flex";
+.special-bg-gif {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
 }
 
-function startProcess() {
-    if(isDead) return;
-
-    const inputField = document.getElementById('user-input');
-    const status = document.getElementById('status-bar');
-    const resultDiv = document.getElementById('final-result');
-
-    if(!inputField || !status || !resultDiv) return;
-
-    const val = inputField.value.trim();
-    if (!val) return;
-
-    const clean = getCleanText(val);
-    const inputWords = clean.replace(/[?]/g, "").split(/\s+/);
-
-    if (val === lastQuestion && lastAnswer !== "") {
-        resultDiv.innerText = lastAnswer;
-        status.innerText = "OSUD JE JIŽ DANÝ...";
-        return;
-    }
-
-    const isBanned = blacklist.some(badWord => {
-        const cleanBadWord = getCleanText(badWord);
-        if (cleanBadWord === "as") return inputWords.includes("as");
-        return inputWords.includes(cleanBadWord) || clean.includes(cleanBadWord + " ");
-    });
-
-    if (isBanned || inputWords.includes("honza") || inputWords.includes("jan")) { 
-        triggerShutdown(); 
-        return; 
-    }
-
-    let currentAnswer = "";
-
-    if (clean.includes("plant") && clean.includes("bomb")) {
-        setBackgroundVisual('dance.gif', 300000); 
-        status.innerText = "BOMBA POLOŽENA. PARTY ZAČÍNÁ...";
-        currentAnswer = "DANCE TIME !";
-    } 
-    else if (weirdWords.some(word => inputWords.includes(word))) {
-        setBackgroundVisual('hmm.gif', 10000); 
-        status.innerText = "What is wrong with you?";
-        currentAnswer = "What is wrong with you? Why are you Blue?";
-    }
-
-    if (!val.endsWith('?') && !currentAnswer) {
-        status.innerText = "CHYBA: MUSÍ KONČIT OTAZNÍKEM!";
-        status.style.color = "red";
-        resultDiv.innerText = "";
-        return;
-    }
-
-    resultDiv.innerText = "";
-    status.style.color = "#00ff41";
-    status.innerText = "PROHLEDÁVÁM MATRIX...";
-    
-    setTimeout(() => {
-        status.innerText = "VÝSLEDEK NALEZEN!";
-        if (!currentAnswer) {
-            const answers = ["ANO", "URČITĚ", "ROZHODNĚ", "NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ"];
-            currentAnswer = answers[Math.floor(Math.random() * answers.length)];
-        }
-        lastQuestion = val;
-        lastAnswer = currentAnswer;
-        resultDiv.innerText = currentAnswer;
-    }, 1000);
+.hmm-side-gif {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22%;
+    max-width: 280px;
+    z-index: 5;
+    border-radius: 20px;
 }
 
-// TOTO ZAJISTÍ, ŽE TLAČÍTKO BUDE REAGOVAT
-document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.querySelector('button');
-    if(btn) btn.onclick = startProcess;
-    
-    const input = document.getElementById('user-input');
-    if(input) input.oninput = (e) => monitorInput(e.target.value);
-});
+.hmm-left { left: 30px; }
+.hmm-right { right: 30px; }
 
+/* OBRAZOVKA PŘI BANU */
+#idiot-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(150, 0, 0, 0.6); /* Červený závoj */
+    background-blend-mode: darken;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    color: white;
+    text-align: center;
+}
 
+#idiot-overlay h1 {
+    font-size: 3.5rem;
+    text-shadow: 2px 2px 10px black;
+    margin: 0;
+}
+
+input {
+    width: 80%;
+    background: rgba(0, 30, 0, 0.5);
+    border: 1px solid #00ff41;
+    border-radius: 10px;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    outline: none;
+}
+
+button {
+    margin-top: 30px;
+    background: #00ff41;
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    padding: 15px 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
