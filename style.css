@@ -1,7 +1,7 @@
 body {
     margin: 0;
     background-color: #000;
-    /* Základní matrix pozadí */
+    /* Základní pozadí */
     background-image: url('pozadi.gif');
     background-size: cover;
     background-position: center;
@@ -23,13 +23,23 @@ body {
     background: rgba(0, 10, 0, 0.9);
     box-shadow: 0 0 30px #00ff41;
     text-align: center;
-    position: relative;
-    /* ZAKULACENÍ ROHŮ */
-    border-radius: 25px;
+    position: relative; /* Důležité pro pozici uší */
+    border-radius: 25px; /* Zakulacené rohy */
     z-index: 10;
 }
 
-/* Styl pro speciální GIFy na pozadí (dance, hmm) */
+/* Styl pro uši (Radek) */
+.ears-style {
+    position: absolute;
+    top: -140px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    z-index: 20;
+    pointer-events: none;
+}
+
+/* Styl pro celoobrazovkové GIFy (dance, hmm) */
 .special-bg-gif {
     position: fixed;
     top: 0;
@@ -37,7 +47,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: -1; /* Musí být pod terminálem */
+    z-index: 1; /* Nad pozadím, ale pod terminálem */
 }
 
 input {
@@ -68,4 +78,5 @@ button:hover {
     box-shadow: 0 0 15px #00ff41;
 }
 
+#status-bar { margin-top: 50px; font-weight: bold; }
 #final-result { margin-top: 20px; font-size: 2.5rem; font-weight: bold; }
