@@ -2,28 +2,26 @@ const blacklist = [
     "hitler", "nsdap", "fasismus", "nacismus", "goring", "himler", "heinrich", "goebbels", "ss", "gestapo", "holocaust", "Göring", "Jews", "žid", "as", "kill",
     "turek", "macinka", "konecna", "okamura", "babis", "fiala", "rajschl",
     "pirati", "spd", "stacilo", "motoriste", "prisaha",
-    "komuniste", "komunismus", "stalin", "lenin", "gottwald", "mao", "marx", "pedofil"
+    "komuniste", "komunismus", "stalin", "lenin", "gottwald", "mao", "marx",
     "rakousky malir"
 ];
 
-const weirdWords = ["sex", "porno"];
+const weirdWords = ["sex", "porno", "uchyl", "nahota", "pedofil", "pusa", "laska", "gay", "bi", "trans"];
 
 let isDead = false;
 let lastQuestion = ""; 
 let lastAnswer = "";   
 
 function getCleanText(text) {
+    if (!text) return "";
     return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
-// LOGIKA PRO ZOBRAZENÍ SPECIÁLNÍCH GIFŮ
 function setBackgroundVisual(url, durationMs) {
-    // Odstranění starých efektů
     const oldGifs = document.querySelectorAll('.active-special');
     oldGifs.forEach(g => g.remove());
 
     if (url === 'hmm.gif') {
-        // Vytvoření dvou koček po stranách
         const leftCat = document.createElement('img');
         const rightCat = document.createElement('img');
         
@@ -38,9 +36,7 @@ function setBackgroundVisual(url, durationMs) {
             leftCat.remove();
             rightCat.remove();
         }, durationMs);
-
     } else {
-        // Klasický GIF na celé pozadí (Dance)
         const gifImg = document.createElement('img');
         gifImg.src = url;
         gifImg.className = 'special-bg-gif active-special';
@@ -85,20 +81,20 @@ function startProcess() {
     const status = document.getElementById('status-bar');
     const resultDiv = document.getElementById('final-result');
 
+    if(!inputField || !status || !resultDiv) return;
+
     const val = inputField.value.trim();
     if (!val) return;
 
     const clean = getCleanText(val);
     const inputWords = clean.replace(/[?]/g, "").split(/\s+/);
 
-    // 1. PAMĚŤ OTÁZKY
     if (val === lastQuestion && lastAnswer !== "") {
         resultDiv.innerText = lastAnswer;
         status.innerText = "OSUD JE JIŽ DANÝ...";
         return;
     }
 
-    // 2. BLACKLIST (Fix Tomáš)
     const isBanned = blacklist.some(badWord => {
         const cleanBadWord = getCleanText(badWord);
         if (cleanBadWord === "as") return inputWords.includes("as");
@@ -112,7 +108,6 @@ function startProcess() {
 
     let currentAnswer = "";
 
-    // 3. SPECIÁLNÍ REAKCE
     if (clean.includes("plant") && clean.includes("bomb")) {
         setBackgroundVisual('dance.gif', 300000); 
         status.innerText = "BOMBA POLOŽENA. PARTY ZAČÍNÁ...";
@@ -120,11 +115,10 @@ function startProcess() {
     } 
     else if (weirdWords.some(word => inputWords.includes(word))) {
         setBackgroundVisual('hmm.gif', 10000); 
-        status.innerText = "What is worng with you?";
-        currentAnswer = "Why are you BLUE?";
+        status.innerText = "HMM... TO JE DOST DIVNÝ DOTAZ.";
+        currentAnswer = "EHM... RADŠI SE NEPTEJ.";
     }
 
-    // 4. OTAZNÍK
     if (!val.endsWith('?') && !currentAnswer) {
         status.innerText = "CHYBA: MUSÍ KONČIT OTAZNÍKEM!";
         status.style.color = "red";
@@ -132,7 +126,6 @@ function startProcess() {
         return;
     }
 
-    // 5. ANALÝZA
     resultDiv.innerText = "";
     status.style.color = "#00ff41";
     status.innerText = "PROHLEDÁVÁM MATRIX...";
@@ -140,13 +133,20 @@ function startProcess() {
     setTimeout(() => {
         status.innerText = "VÝSLEDEK NALEZEN!";
         if (!currentAnswer) {
-            const answers = ["ANO", "MAMA MIA YESS", "DA", "NE", "NOPE", "NEIN"];
+            const answers = ["ANO", "URČITĚ", "ROZHODNĚ", "NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ"];
             currentAnswer = answers[Math.floor(Math.random() * answers.length)];
         }
-        
         lastQuestion = val;
         lastAnswer = currentAnswer;
         resultDiv.innerText = currentAnswer;
     }, 1000);
 }
 
+// TOTO ZAJISTÍ, ŽE TLAČÍTKO BUDE REAGOVAT
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.querySelector('button');
+    if(btn) btn.onclick = startProcess;
+    
+    const input = document.getElementById('user-input');
+    if(input) input.oninput = (e) => monitorInput(e.target.value);
+});
