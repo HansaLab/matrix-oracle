@@ -1,7 +1,7 @@
 body {
     margin: 0;
-    /* Tady nastavíme tvůj výchozí Matrix GIF na pozadí */
-    background: url('matrix_bg.gif') no-repeat center center fixed; 
+    /* POUŽITÍ TVÉHO NAHRANÉHO GIFU */
+    background: url('pozadi.gif') no-repeat center center fixed; 
     background-size: cover;
     background-color: #000;
     color: #00ff41;
@@ -11,8 +11,7 @@ body {
     align-items: center;
     height: 100vh;
     overflow: hidden;
-    /* Efekt hloubky pro celou stránku */
-    perspective: 1000px;
+    perspective: 1200px; /* Nutné pro 3D efekt */
 }
 
 .terminal {
@@ -20,25 +19,25 @@ body {
     max-width: 650px;
     border: 2px solid #00ff41;
     padding: 40px;
-    background: rgba(0, 20, 0, 0.85); /* Trochu průhlednější, aby vynikl GIF pod tím */
+    background: rgba(0, 15, 0, 0.9);
     
     /* ZAKULACENÍ ROHŮ */
-    border-radius: 25px;
+    border-radius: 30px;
     
-    /* 3D EFEKT A ZÁŘE */
-    box-shadow: 0 0 50px rgba(0, 255, 65, 0.4), inset 0 0 20px rgba(0, 255, 65, 0.2);
-    transform: rotateX(5deg) rotateY(-2deg); /* Lehké naklonění pro 3D dojem */
+    /* 3D NAKLONĚNÍ A ZÁŘE */
+    box-shadow: 0 0 40px rgba(0, 255, 65, 0.5);
+    transform: rotateX(6deg) rotateY(-3deg); 
     
     text-align: center;
     position: relative;
-    backdrop-filter: blur(5px); /* Rozmaže GIF pod terminálem pro lepší čitelnost */
+    backdrop-filter: blur(3px);
 }
 
 input {
     width: 80%;
-    background: rgba(0, 40, 0, 0.5);
+    background: rgba(0, 30, 0, 0.6);
     border: 1px solid #00ff41;
-    border-radius: 10px;
+    border-radius: 12px;
     color: #fff;
     font-size: 1.2rem;
     padding: 10px;
@@ -52,14 +51,17 @@ button {
     background: #00ff41;
     color: #000;
     border: none;
-    border-radius: 15px; /* Zakulacené tlačítko */
+    border-radius: 15px;
     padding: 15px 40px;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: 0.3s ease;
 }
 
 button:hover {
     transform: scale(1.1);
     box-shadow: 0 0 20px #00ff41;
 }
+
+#status-bar { margin-top: 50px; font-weight: bold; }
+#final-result { margin-top: 20px; font-size: 3rem; font-weight: bold; }
