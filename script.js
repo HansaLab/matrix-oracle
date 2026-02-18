@@ -6,17 +6,18 @@ const blacklist = [
     "rakousky malir"
 ];
 
-const weirdWords = ["sex", "porno", "uchyl", "nahota", "pedofil", "pusa", "laska", "gay", "trans"];
+const weirdWords = ["sex", "porno", "uchyl", "nahota", "pedofil", "pusa", "laska", "gay", "bi", "trans"];
 
 let isDead = false;
 let lastQuestion = ""; 
 let lastAnswer = "";   
 
+// Pomocná funkce pro čištění textu (bez diakritiky a malá písmena)
 function getCleanText(text) {
     return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
-// POMOCNÁ FUNKCE PRO CELOOBRAZOVKOVÉ GIFy (Dance, Hmm)
+// Funkce pro zobrazení GIFů na pozadí (Dance, Hmm)
 function setBackgroundVisual(url, durationMs) {
     const oldGif = document.getElementById('active-special-gif');
     if(oldGif) oldGif.remove();
@@ -34,7 +35,7 @@ function setBackgroundVisual(url, durationMs) {
     }, durationMs);
 }
 
-// MONITOROVÁNÍ PSANÍ (Radek)
+// Sledování vstupu pro uši (Radek)
 function monitorInput(val) {
     if(isDead) return;
     const clean = getCleanText(val);
@@ -45,7 +46,7 @@ function monitorInput(val) {
             const earsImg = document.createElement('img');
             earsImg.id = 'radek-ears';
             earsImg.src = 'radek.gif'; 
-            earsImg.className = 'ears-style'; // Použije styl z CSS
+            earsImg.className = 'ears-style';
             
             if(terminal) terminal.appendChild(earsImg);
 
@@ -76,11 +77,22 @@ function startProcess() {
     const clean = getCleanText(val);
     const inputWords = clean.replace(/[?]/g, "").split(/\s+/);
 
-    // --- OPRAVENÝ BLACKLIST (Tomáš povolen) ---
+    // --- 1. PAMĚŤ OTÁZKY (Fix pro stejnou odpověď) ---
+    if (val === lastQuestion && lastAnswer !== "") {
+        resultDiv.innerText = lastAnswer;
+        status.innerText = "OSUD JE JIŽ DANÝ...";
+        status.style.color = "#00ff41";
+        return;
+    }
+
+    // --- 2. BLACKLIST (Fix pro Tomáše) ---
     const isBanned = blacklist.some(badWord => {
         const cleanBadWord = getCleanText(badWord);
+        // Pokud kontrolujeme "as", musí to být celé slovo
         if (cleanBadWord === "as") return inputWords.includes("as");
-        return clean.includes(cleanBadWord);
+        // U víceslovných (rakouský malíř) nebo delších slov kontrolujeme výskyt
+        if (cleanBadWord.includes(" ")) return clean.includes(cleanBadWord);
+        return inputWords.includes(cleanBadWord);
     });
 
     if (isBanned || inputWords.includes("honza") || inputWords.includes("jan")) { 
@@ -90,19 +102,20 @@ function startProcess() {
 
     let currentAnswer = "";
 
-    // --- SPECIÁLNÍ REAKCE ---
+    // --- 3. SPECIÁLNÍ GIF REAKCE ---
     if (clean.includes("plant") && clean.includes("bomb")) {
         setBackgroundVisual('dance.gif', 300000); 
         status.innerText = "BOMBA POLOŽENA. PARTY ZAČÍNÁ...";
         currentAnswer = "DANCE TIME !";
     } 
-    else if (weirdWords.some(word => clean.includes(word))) {
+    else if (weirdWords.some(word => inputWords.includes(word))) {
         setBackgroundVisual('hmm.gif', 10000); 
         status.innerText = "HMM... TO JE DOST DIVNÝ DOTAZ.";
         currentAnswer = "EHM... RADŠI SE NEPTEJ.";
     }
 
-    // --- KONTROLA OTAZNÍKU ---
+    // --- 4. KONTROLA OTAZNÍKU ---
+    // Pokud uživatel nenapsal speciální příkaz (jako bomba), musí tam být otazník
     if (!val.endsWith('?') && !currentAnswer) {
         status.innerText = "CHYBA: MUSÍ KONČIT OTAZNÍKEM!";
         status.style.color = "red";
@@ -110,18 +123,29 @@ function startProcess() {
         return;
     }
 
-    // --- ANALÝZA VÝSLEDKU ---
+    // --- 5. GENEROVÁNÍ VÝSLEDKU ---
     resultDiv.innerText = "";
     status.style.color = "#00ff41";
+    status.innerText = "PROHLEDÁVÁM MATRIX...";
     
     setTimeout(() => {
         status.innerText = "VÝSLEDEK NALEZEN!";
+        
+        // Pokud nemáme odpověď z GIFu, vybereme náhodnou
         if (!currentAnswer) {
-            const answers = ["ANO", "URČITĚ", "ROZHODNĚ", "NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ"];
-            currentAnswer = answers[Math.floor(Math.random() * answers.length)];
+            if (clean.includes("furry") && clean.includes("coufal")) {
+                currentAnswer = "Coufal 100% FURRY";
+            } else if (clean.includes("radek")) {
+                currentAnswer = "JASNÝ ANO";
+            } else {
+                const answers = ["ANO", "URČITĚ", "ROZHODNĚ", "BEZPOCHYBY", "NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ", "VYLOUČENO"];
+                currentAnswer = answers[Math.floor(Math.random() * answers.length)];
+            }
         }
-        resultDiv.innerText = currentAnswer;
+
+        // ULOŽENÍ DO PAMĚTI
         lastQuestion = val;
         lastAnswer = currentAnswer;
-    }, 1000);
+        resultDiv.innerText = currentAnswer;
+    }, 1200);
 }
