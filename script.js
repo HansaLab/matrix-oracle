@@ -115,8 +115,8 @@ function startProcess() {
     } 
     else if (weirdWords.some(word => inputWords.includes(word))) {
         setBackgroundVisual('hmm.gif', 10000); 
-        status.innerText = "HMM... TO JE DOST DIVNÝ DOTAZ.";
-        currentAnswer = "EHM... RADŠI SE NEPTEJ.";
+        status.innerText = "What is wrong with you?";
+        currentAnswer = "Why are you BLUE?";
     }
 
     if (!val.endsWith('?') && !currentAnswer) {
@@ -150,3 +150,4 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById('user-input');
     if(input) input.oninput = (e) => monitorInput(e.target.value);
 });
+
