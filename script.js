@@ -114,7 +114,7 @@ function startProcess() {
     else if (weirdWords.some(word => inputWords.includes(word))) {
         setBackgroundVisual('hmm.gif', 10000); 
         status.innerText = "HMM... TO JE DOST DIVNÝ DOTAZ.";
-        currentAnswer = "EHM... RADŠI SE NEPTEJ.";
+        currentAnswer = "What is wrong with you? Why are you BLUE?";
     }
 
     if (!val.endsWith('?') && !currentAnswer) {
@@ -131,7 +131,7 @@ function startProcess() {
     setTimeout(() => {
         status.innerText = "VÝSLEDEK NALEZEN!";
         if (!currentAnswer) {
-            const answers = ["ANO", "URČITĚ", "ROZHODNĚ", "NE", "NIKDY", "VYLOUČENO"];
+            const answers = ["ANO", "YES SIR", "BLOODY NICE", "NE", "NEIN", "NOPE"];
             currentAnswer = answers[Math.floor(Math.random() * answers.length)];
         }
         lastQuestion = val;
@@ -151,3 +151,4 @@ document.addEventListener("DOMContentLoaded", () => {
         input.onkeydown = (e) => { if(e.key === "Enter") startProcess(); };
     }
 });
+
