@@ -1,8 +1,11 @@
 body {
     margin: 0;
-    /* Základní pozadí - tvůj soubor pozadi.gif */
-    background: #000 url('pozadi.gif') no-repeat center center fixed;
+    background-color: #000;
+    /* Základní matrix pozadí */
+    background-image: url('pozadi.gif');
     background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     color: #00ff41;
     font-family: 'Courier New', monospace;
     display: flex;
@@ -17,20 +20,31 @@ body {
     max-width: 650px;
     border: 2px solid #00ff41;
     padding: 40px;
-    background: rgba(0, 15, 0, 0.9);
-    /* ZAKULACENÍ ROHŮ */
-    border-radius: 30px;
-    /* ZÁŘE BEZ 3D NAKLONĚNÍ */
-    box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+    background: rgba(0, 10, 0, 0.9);
+    box-shadow: 0 0 30px #00ff41;
     text-align: center;
     position: relative;
+    /* ZAKULACENÍ ROHŮ */
+    border-radius: 25px;
+    z-index: 10;
+}
+
+/* Styl pro speciální GIFy na pozadí (dance, hmm) */
+.special-bg-gif {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1; /* Musí být pod terminálem */
 }
 
 input {
     width: 80%;
-    background: rgba(0, 40, 0, 0.6);
+    background: rgba(0, 30, 0, 0.5);
     border: 1px solid #00ff41;
-    border-radius: 12px;
+    border-radius: 10px;
     color: #fff;
     font-size: 1.2rem;
     padding: 10px;
@@ -44,17 +58,14 @@ button {
     background: #00ff41;
     color: #000;
     border: none;
-    border-radius: 15px;
+    border-radius: 12px;
     padding: 15px 40px;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.3s ease;
 }
 
 button:hover {
-    box-shadow: 0 0 20px #00ff41;
-    filter: brightness(1.1);
+    box-shadow: 0 0 15px #00ff41;
 }
 
-#status-bar { margin-top: 50px; font-weight: bold; }
-#final-result { margin-top: 20px; font-size: 3rem; font-weight: bold; }
+#final-result { margin-top: 20px; font-size: 2.5rem; font-weight: bold; }
