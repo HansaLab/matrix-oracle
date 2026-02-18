@@ -1,9 +1,8 @@
 body {
     margin: 0;
-    /* POUŽITÍ TVÉHO NAHRANÉHO GIFU */
-    background: url('pozadi.gif') no-repeat center center fixed; 
+    /* Základní pozadí - tvůj soubor pozadi.gif */
+    background: #000 url('pozadi.gif') no-repeat center center fixed;
     background-size: cover;
-    background-color: #000;
     color: #00ff41;
     font-family: 'Courier New', monospace;
     display: flex;
@@ -11,7 +10,6 @@ body {
     align-items: center;
     height: 100vh;
     overflow: hidden;
-    perspective: 1200px; /* Nutné pro 3D efekt */
 }
 
 .terminal {
@@ -20,22 +18,17 @@ body {
     border: 2px solid #00ff41;
     padding: 40px;
     background: rgba(0, 15, 0, 0.9);
-    
     /* ZAKULACENÍ ROHŮ */
     border-radius: 30px;
-    
-    /* 3D NAKLONĚNÍ A ZÁŘE */
-    box-shadow: 0 0 40px rgba(0, 255, 65, 0.5);
-    transform: rotateX(6deg) rotateY(-3deg); 
-    
+    /* ZÁŘE BEZ 3D NAKLONĚNÍ */
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
     text-align: center;
     position: relative;
-    backdrop-filter: blur(3px);
 }
 
 input {
     width: 80%;
-    background: rgba(0, 30, 0, 0.6);
+    background: rgba(0, 40, 0, 0.6);
     border: 1px solid #00ff41;
     border-radius: 12px;
     color: #fff;
@@ -59,8 +52,8 @@ button {
 }
 
 button:hover {
-    transform: scale(1.1);
     box-shadow: 0 0 20px #00ff41;
+    filter: brightness(1.1);
 }
 
 #status-bar { margin-top: 50px; font-weight: bold; }
