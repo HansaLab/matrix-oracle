@@ -1,13 +1,12 @@
 const blacklist = [
-    "hitler", "nsdap", "fasismus", "nacismus", "goring", "himler", "heinrich", "goebbels", "ss", "gestapo", "holocaust", "Göring", "Jews", "žid", "as", "kill",
+    "hitler", "nsdap", "fasismus", "nacismus", "goring", "himler", "heinrich", "goebbels", "SS", "gestapo", "holocaust", "Göring", "Jews", "žid", "SA", "kill",
     "turek", "macinka", "konecna", "okamura", "babis", "fiala", "rajschl",
     "pirati", "spd", "stacilo", "motoriste", "prisaha",
     "komuniste", "komunismus", "stalin", "lenin", "gottwald", "mao", "marx",
     "rakousky malir"
 ];
 
-// Seznam slov, která spustí "hmm" GIF
-const weirdWords = ["sex", "porno", "uchyl", "nahota", "pedofil", "pusa", "laska", "gay", "bi", "trans"];
+const weirdWords = ["sex", "porno", "uchyl", "nahota", "pedofil", "pusa", "laska", "gay", "bi", "trans", "divny"];
 
 let isDead = false;
 let lastQuestion = ""; 
@@ -17,8 +16,8 @@ function getCleanText(text) {
     return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
-// Pomocná funkce pro přepínání pozadí (GIF/Obrázek)
-function setBackgroundVisual(url, durationMs, isLubos = false) {
+// Funkce pro vizuální změny na pozadí
+function setBackgroundVisual(url, durationMs) {
     const styleTarget = document.documentElement.style;
     const canvas = document.querySelector('canvas');
 
@@ -27,6 +26,7 @@ function setBackgroundVisual(url, durationMs, isLubos = false) {
     styleTarget.setProperty('background-position', 'center', 'important');
     styleTarget.setProperty('background-repeat', 'no-repeat', 'important');
     
+    // Schováme Matrix déšť, aby byl vidět GIF
     if(canvas) canvas.style.display = "none"; 
 
     setTimeout(() => {
@@ -86,83 +86,88 @@ function startProcess() {
     if(!inputField || !status || !resultDiv) return;
 
     const val = inputField.value.trim();
+    if (!val) return;
+
     const clean = getCleanText(val);
     const inputWords = clean.replace(/[?]/g, "").split(/\s+/);
 
-    if (val === lastQuestion && lastAnswer !== "") {
-        resultDiv.innerText = lastAnswer;
-        status.innerText = "OSUD JE JIŽ DANÝ...";
-        return;
-    }
-
-    // --- CENZURA A BLACKLIST ---
-    const forbiddenPeople = ["honza", "jan"];
-    if (inputWords.some(word => forbiddenPeople.includes(word))) { 
-        triggerShutdown(); 
-        return; 
-    }
-
-    if (blacklist.some(badWord => {
+    // --- 1. KONTROLA BLACKLISTU (POUZE CELÁ SLOVA) ---
+    const isBanned = blacklist.some(badWord => {
         const cleanBadWord = getCleanText(badWord);
-        return inputWords.includes(cleanBadWord) || clean.includes(cleanBadWord);
-    })) { 
+        // Pokud je v blacklistu fráze (víc slov), kontrolujeme celou větu
+        if (cleanBadWord.includes(" ")) return clean.includes(cleanBadWord);
+        // Jinak kontrolujeme pouze SHODU CELÝCH SLOV (aby prošel Tomáš)
+        return inputWords.includes(cleanBadWord);
+    });
+
+    if (isBanned || inputWords.includes("honza") || inputWords.includes("jan")) { 
         triggerShutdown(); 
         return; 
     }
 
-    // --- SPECIÁLNÍ GIF REAKCE ---
+    // --- 2. SPECIÁLNÍ GIF REAKCE (SPOUŠTÍ SE HNED) ---
     let currentAnswer = "";
 
-    // 1. Plant a bomb -> Dance GIF na 5 minut (300 000 ms)
     if (clean.includes("plant") && clean.includes("bomb")) {
-        setBackgroundVisual('dance.gif', 300000);
+        setBackgroundVisual('dance.gif', 300000); // 5 minut
         status.innerText = "BOMBA POLOŽENA. PARTY ZAČÍNÁ...";
-        currentAnswer = "DANCE TIME!";
-    }
-
-    // 2. Divné věci -> Hmm GIF na 10 sekund
-    if (weirdWords.some(word => clean.includes(word))) {
-        setBackgroundVisual('hmm.gif', 10000);
+        currentAnswer = "DANCE TIME !";
+    } 
+    else if (weirdWords.some(word => inputWords.includes(word))) {
+        setBackgroundVisual('hmm.gif', 10000); // 10 sekund
         status.innerText = "HMM... TO JE DOST DIVNÝ DOTAZ.";
         currentAnswer = "EHM... RADŠI SE NEPTEJ.";
     }
+    else if (clean.includes("lubos") && clean.includes("lovec")) {
+        setBackgroundVisual('hunter.jfif', 240000);
+        status.innerText = "POZOR, LOVEC JE NA BLÍZKU!";
+        currentAnswer = "LOVEC IDENTIFIKOVÁN!";
+    } 
+    else if (clean.includes("duha") || clean.includes("rainbow")) {
+        currentAnswer = activateRainbow(status);
+    }
 
-    // Kontrola otazníku
-    if (!val.endsWith('?')) {
+    // --- 3. KONTROLA OTAZNÍKU (POKUD NEJDE O SPECIÁLNÍ GIF) ---
+    if (!val.endsWith('?') && !currentAnswer) {
         status.innerText = "CHYBA: MUSÍ KONČIT OTAZNÍKEM!";
         status.style.color = "red";
         resultDiv.innerText = "";
         return;
     }
 
-    // Aktivace dalších módů (Luboš / Duha)
-    if (clean.includes("lubos") && clean.includes("lovec")) {
-        setBackgroundVisual('hunter.jfif', 240000);
-        status.innerText = "POZOR, LOVEC JE NA BLÍZKU!";
-        currentAnswer = "LOVEC IDENTIFIKOVÁN!";
-    } 
-    
-    if (clean.includes("duha") || clean.includes("rainbow")) {
-        currentAnswer = activateRainbow(status);
+    // --- 4. FINÁLNÍ ANALÝZA ---
+    if (val === lastQuestion && lastAnswer !== "" && !currentAnswer) {
+        resultDiv.innerText = lastAnswer;
+        status.innerText = "OSUD JE JIŽ DANÝ...";
+        return;
     }
 
-    // Proces analýzy (pokud už nebyla nastavena speciální odpověď z GIFu)
     resultDiv.innerText = "";
     status.style.color = "#00ff41";
-    if (!currentAnswer) status.innerText = "PROHLEDÁVÁM MATRIX...";
     
+    // Pokud už máme odpověď (z GIFu), rovnou ji vypíšeme po pauze
+    if (currentAnswer) {
+        setTimeout(() => {
+            status.innerText = "VÝSLEDEK NALEZEN!";
+            resultDiv.innerText = currentAnswer;
+            lastQuestion = val;
+            lastAnswer = currentAnswer;
+        }, 1000);
+        return;
+    }
+
+    // Klasické hledání v Matrixu
+    status.innerText = "PROHLEDÁVÁM MATRIX...";
     setTimeout(() => {
         status.innerText = "VÝSLEDEK NALEZEN!";
-
-        if (!currentAnswer) {
-            if (clean.includes("furry") && clean.includes("coufal")) {
-                currentAnswer = "Coufal 100% FURRY";
-            } else if (clean.includes("radek")) {
-                currentAnswer = "JASNÝ ANO";
-            } else {
-                const answers = ["ANO", "URČITĚ", "ROZHODNĚ", "BEZPOCHYBY", "NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ", "VYLOUČENO"];
-                currentAnswer = answers[Math.floor(Math.random() * answers.length)];
-            }
+        
+        if (clean.includes("furry") && clean.includes("coufal")) {
+            currentAnswer = "Coufal 100% FURRY";
+        } else if (clean.includes("radek")) {
+            currentAnswer = "JASNÝ ANO";
+        } else {
+            const answers = ["ANO", "URČITĚ", "ROZHODNĚ", "BEZPOCHYBY", "NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ", "VYLOUČENO"];
+            currentAnswer = answers[Math.floor(Math.random() * answers.length)];
         }
 
         lastQuestion = val;
