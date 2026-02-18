@@ -6,24 +6,25 @@ const blacklist = [
     "rakousky malir"
 ];
 
-const weirdWords = ["sex", "porno", "uchyl", "nahota", "pedofil", "pusa", "laska"];
+const weirdWords = ["sex", "porno", "uchyl", "nahota", "pedofil", "pusa", "laska", "gay", "trans"];
 
 let isDead = false;
+let lastQuestion = ""; 
+let lastAnswer = "";   
 
 function getCleanText(text) {
     return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
-// FUNKCE PRO ZOBRAZENÍ GIFŮ (Stejný princip jako u Radka)
+// POMOCNÁ FUNKCE PRO CELOOBRAZOVKOVÉ GIFy (Dance, Hmm)
 function setBackgroundVisual(url, durationMs) {
-    // Pokud už nějaký speciální GIF běží, smažeme ho, aby se nekryly
     const oldGif = document.getElementById('active-special-gif');
     if(oldGif) oldGif.remove();
 
     const gifImg = document.createElement('img');
     gifImg.src = url;
     gifImg.id = 'active-special-gif';
-    gifImg.className = 'special-bg-gif'; // Styl z CSS
+    gifImg.className = 'special-bg-gif';
     
     document.body.appendChild(gifImg);
 
@@ -33,6 +34,7 @@ function setBackgroundVisual(url, durationMs) {
     }, durationMs);
 }
 
+// MONITOROVÁNÍ PSANÍ (Radek)
 function monitorInput(val) {
     if(isDead) return;
     const clean = getCleanText(val);
@@ -43,8 +45,10 @@ function monitorInput(val) {
             const earsImg = document.createElement('img');
             earsImg.id = 'radek-ears';
             earsImg.src = 'radek.gif'; 
-            earsImg.style = "position:absolute; top:-140px; left:50%; transform:translateX(-50%); width:320px; z-index:20; pointer-events:none;";
+            earsImg.className = 'ears-style'; // Použije styl z CSS
+            
             if(terminal) terminal.appendChild(earsImg);
+
             setTimeout(() => { 
                 const e = document.getElementById('radek-ears');
                 if(e) e.remove(); 
@@ -72,10 +76,9 @@ function startProcess() {
     const clean = getCleanText(val);
     const inputWords = clean.replace(/[?]/g, "").split(/\s+/);
 
-    // --- OPRAVENÝ BLACKLIST (Tomáš už funguje!) ---
+    // --- OPRAVENÝ BLACKLIST (Tomáš povolen) ---
     const isBanned = blacklist.some(badWord => {
         const cleanBadWord = getCleanText(badWord);
-        // "as" zabanujeme jen pokud je to samostatné slovo
         if (cleanBadWord === "as") return inputWords.includes("as");
         return clean.includes(cleanBadWord);
     });
@@ -87,7 +90,7 @@ function startProcess() {
 
     let currentAnswer = "";
 
-    // --- SPECIÁLNÍ GIF REAKCE ---
+    // --- SPECIÁLNÍ REAKCE ---
     if (clean.includes("plant") && clean.includes("bomb")) {
         setBackgroundVisual('dance.gif', 300000); 
         status.innerText = "BOMBA POLOŽENA. PARTY ZAČÍNÁ...";
@@ -107,7 +110,7 @@ function startProcess() {
         return;
     }
 
-    // --- ANALÝZA ---
+    // --- ANALÝZA VÝSLEDKU ---
     resultDiv.innerText = "";
     status.style.color = "#00ff41";
     
@@ -118,5 +121,7 @@ function startProcess() {
             currentAnswer = answers[Math.floor(Math.random() * answers.length)];
         }
         resultDiv.innerText = currentAnswer;
+        lastQuestion = val;
+        lastAnswer = currentAnswer;
     }, 1000);
 }
