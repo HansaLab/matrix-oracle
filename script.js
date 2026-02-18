@@ -2,11 +2,11 @@ const blacklist = [
     "hitler", "nsdap", "fasismus", "nacismus", "goring", "himler", "heinrich", "goebbels", "ss", "gestapo", "holocaust", "Göring", "Jews", "žid", "as", "kill",
     "turek", "macinka", "konecna", "okamura", "babis", "fiala", "rajschl",
     "pirati", "spd", "stacilo", "motoriste", "prisaha",
-    "komuniste", "komunismus", "stalin", "lenin", "gottwald", "mao", "marx",
+    "komuniste", "komunismus", "stalin", "lenin", "gottwald", "mao", "marx", "pedofil"
     "rakousky malir"
 ];
 
-const weirdWords = ["sex", "porno", "uchyl", "nahota", "pedofil", "pusa", "laska", "gay", "bi", "trans"];
+const weirdWords = ["sex", "porno"];
 
 let isDead = false;
 let lastQuestion = ""; 
@@ -120,8 +120,8 @@ function startProcess() {
     } 
     else if (weirdWords.some(word => inputWords.includes(word))) {
         setBackgroundVisual('hmm.gif', 10000); 
-        status.innerText = "HMM... TO JE DOST DIVNÝ DOTAZ.";
-        currentAnswer = "EHM... RADŠI SE NEPTEJ.";
+        status.innerText = "What is worng with you?";
+        currentAnswer = "Why are you BLUE?";
     }
 
     // 4. OTAZNÍK
@@ -140,7 +140,7 @@ function startProcess() {
     setTimeout(() => {
         status.innerText = "VÝSLEDEK NALEZEN!";
         if (!currentAnswer) {
-            const answers = ["ANO", "URČITĚ", "ROZHODNĚ", "NE", "NIKDY", "V ŽÁDNÉM PŘÍPADĚ"];
+            const answers = ["ANO", "MAMA MIA YESS", "DA", "NE", "NOPE", "NEIN"];
             currentAnswer = answers[Math.floor(Math.random() * answers.length)];
         }
         
@@ -149,3 +149,4 @@ function startProcess() {
         resultDiv.innerText = currentAnswer;
     }, 1000);
 }
+
