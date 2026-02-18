@@ -2,58 +2,51 @@ const blacklist = [
     "hitler", "nsdap", "fasismus", "nacismus", "goring", "himler", "heinrich", "goebbels", "ss", "gestapo", "holocaust", "Göring", "Jews", "žid", "as", "kill",
     "turek", "macinka", "konecna", "okamura", "babis", "fiala", "rajschl",
     "pirati", "spd", "stacilo", "motoriste", "prisaha",
-    "komuniste", "komunismus", "stalin", "lenin", "gottwald", "mao", "marx"
+    "komuniste", "komunismus", "stalin", "lenin", "gottwald", "mao", "marx",
+    "rakousky malir"
 ];
+
+// Seznam slov, která spustí "hmm" GIF
+const weirdWords = ["sex", "porno", "uchyl", "nahota", "pedofil", "pusa", "laska", "gay", "bi", "trans"];
 
 let isDead = false;
 let lastQuestion = ""; 
 let lastAnswer = "";   
 
-// Pomocná funkce pro čištění textu
 function getCleanText(text) {
     return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
-// --- SPECIÁLNÍ MÓD: DUHA ---
-function activateRainbow(status) {
-    console.log("Aktivuji Duhový mód...");
-    status.innerText = "SPOUŠTÍM DUHOVÝ PROTOKOL...";
+// Pomocná funkce pro přepínání pozadí (GIF/Obrázek)
+function setBackgroundVisual(url, durationMs, isLubos = false) {
+    const styleTarget = document.documentElement.style;
+    const canvas = document.querySelector('canvas');
+
+    styleTarget.setProperty('background-image', `url('${url}')`, 'important');
+    styleTarget.setProperty('background-size', 'cover', 'important');
+    styleTarget.setProperty('background-position', 'center', 'important');
+    styleTarget.setProperty('background-repeat', 'no-repeat', 'important');
     
+    if(canvas) canvas.style.display = "none"; 
+
+    setTimeout(() => {
+        styleTarget.setProperty('background-image', 'none');
+        if(canvas) canvas.style.display = "block"; 
+    }, durationMs);
+}
+
+function activateRainbow(status) {
+    status.innerText = "SPOUŠTÍM DUHOVÝ PROTOKOL...";
     let hue = 0;
     const interval = setInterval(() => {
         hue = (hue + 8) % 360;
         document.documentElement.style.setProperty('filter', `hue-rotate(${hue}deg)`, 'important');
     }, 40);
-
     setTimeout(() => {
         clearInterval(interval);
         document.documentElement.style.filter = "none";
     }, 30000);
-    
     return "OCHUTNEJ DUHU!";
-}
-
-// --- SPECIÁLNÍ MÓD: LUBOŠ ---
-function activateLubos(canvas, status) {
-    console.log("Aktivuji Lovce...");
-    status.innerText = "POZOR, LOVEC JE NA BLÍZKU!";
-    
-    const styleTarget = document.documentElement.style;
-    styleTarget.setProperty('background-image', "url('hunter.jfif')", 'important');
-    styleTarget.setProperty('background-size', 'cover', 'important');
-    styleTarget.setProperty('background-position', 'center', 'important');
-    styleTarget.setProperty('background-repeat', 'no-repeat', 'important');
-
-    if(canvas) {
-        canvas.style.display = "none"; // Schováme Matrix kód, aby byl Luboš vidět
-    }
-
-    setTimeout(() => {
-        styleTarget.setProperty('background-image', 'none');
-        if(canvas) canvas.style.display = "block";
-    }, 240000);
-
-    return "LOVEC IDENTIFIKOVÁN!";
 }
 
 function monitorInput(val) {
@@ -72,22 +65,6 @@ function monitorInput(val) {
                 const e = document.getElementById('radek-ears');
                 if(e) e.remove(); 
             }, 60000);
-        }
-    }
-
-    if(clean.includes("okurka")) {
-        if (!document.getElementById('znojmia-left')) {
-            const leftOkurka = document.createElement('img');
-            leftOkurka.id = 'znojmia-left';
-            leftOkurka.src = 'okurka.avif';
-            leftOkurka.style = "position:fixed; left:20px; top:50%; transform:translateY(-50%); width:180px; z-index:100; pointer-events:none;";
-            document.body.appendChild(leftOkurka);
-
-            const rightOkurka = leftOkurka.cloneNode();
-            rightOkurka.id = 'znojmia-right';
-            rightOkurka.style.left = "auto";
-            rightOkurka.style.right = "20px";
-            document.body.appendChild(rightOkurka);
         }
     }
 }
@@ -110,17 +87,45 @@ function startProcess() {
 
     const val = inputField.value.trim();
     const clean = getCleanText(val);
+    const inputWords = clean.replace(/[?]/g, "").split(/\s+/);
 
-    // Paměť otázky
     if (val === lastQuestion && lastAnswer !== "") {
         resultDiv.innerText = lastAnswer;
         status.innerText = "OSUD JE JIŽ DANÝ...";
         return;
     }
 
-    // Cenzura
-    if (clean.includes("honza") || clean.includes("jan")) { triggerShutdown(); return; }
-    if (blacklist.some(word => clean.includes(getCleanText(word)))) { triggerShutdown(); return; }
+    // --- CENZURA A BLACKLIST ---
+    const forbiddenPeople = ["honza", "jan"];
+    if (inputWords.some(word => forbiddenPeople.includes(word))) { 
+        triggerShutdown(); 
+        return; 
+    }
+
+    if (blacklist.some(badWord => {
+        const cleanBadWord = getCleanText(badWord);
+        return inputWords.includes(cleanBadWord) || clean.includes(cleanBadWord);
+    })) { 
+        triggerShutdown(); 
+        return; 
+    }
+
+    // --- SPECIÁLNÍ GIF REAKCE ---
+    let currentAnswer = "";
+
+    // 1. Plant a bomb -> Dance GIF na 5 minut (300 000 ms)
+    if (clean.includes("plant") && clean.includes("bomb")) {
+        setBackgroundVisual('dance.gif', 300000);
+        status.innerText = "BOMBA POLOŽENA. PARTY ZAČÍNÁ...";
+        currentAnswer = "DANCE TIME!";
+    }
+
+    // 2. Divné věci -> Hmm GIF na 10 sekund
+    if (weirdWords.some(word => clean.includes(word))) {
+        setBackgroundVisual('hmm.gif', 10000);
+        status.innerText = "HMM... TO JE DOST DIVNÝ DOTAZ.";
+        currentAnswer = "EHM... RADŠI SE NEPTEJ.";
+    }
 
     // Kontrola otazníku
     if (!val.endsWith('?')) {
@@ -130,18 +135,18 @@ function startProcess() {
         return;
     }
 
-    let currentAnswer = "";
-
-    // Aktivace speciálních módů
+    // Aktivace dalších módů (Luboš / Duha)
     if (clean.includes("lubos") && clean.includes("lovec")) {
-        currentAnswer = activateLubos(canvas, status);
+        setBackgroundVisual('hunter.jfif', 240000);
+        status.innerText = "POZOR, LOVEC JE NA BLÍZKU!";
+        currentAnswer = "LOVEC IDENTIFIKOVÁN!";
     } 
     
     if (clean.includes("duha") || clean.includes("rainbow")) {
         currentAnswer = activateRainbow(status);
     }
 
-    // Proces analýzy
+    // Proces analýzy (pokud už nebyla nastavena speciální odpověď z GIFu)
     resultDiv.innerText = "";
     status.style.color = "#00ff41";
     if (!currentAnswer) status.innerText = "PROHLEDÁVÁM MATRIX...";
